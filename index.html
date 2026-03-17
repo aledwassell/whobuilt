@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhoBuilt — Independent New Build Intelligence</title>
+    <meta
+      name="description"
+      content="WhoBuilt is the UK's first independent quality comparison service for new build housebuilders. Join the waitlist."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --br: #c8331a;
+        --br-dark: #8c2210;
+        --br-light: #faece7;
+        --ink: #1a1a18;
+        --muted: #6b6b66;
+        --border: #e2e0d8;
+        --bg: #ffffff;
+        --bg-secondary: #f7f5f0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+      }
+
+      .page {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 1.5rem 5rem;
+      }
+
+      /* Header */
+      .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.75rem 0 1rem;
+        border-bottom: 1.5px solid var(--ink);
+      }
+      .logo {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: var(--ink);
+        text-decoration: none;
+      }
+      .logo span {
+        color: var(--br);
+      }
+      .logo sup {
+        font-size: 11px;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 500;
+        color: var(--muted);
+        vertical-align: super;
+        margin-left: 2px;
+        letter-spacing: 0.04em;
+      }
+      .pill {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        background: var(--br-light);
+        color: var(--br-dark);
+        padding: 4px 10px;
+        border-radius: 100px;
+      }
+
+      /* Hero */
+      .hero {
+        padding: 3.5rem 0 2.5rem;
+        border-bottom: 0.5px solid var(--border);
+      }
+      .overline {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--br);
+        font-weight: 500;
+        margin-bottom: 1rem;
+      }
+      .hero h1 {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(40px, 6vw, 66px);
+        font-weight: 900;
+        line-height: 1;
+        color: var(--ink);
+        margin-bottom: 1.5rem;
+      }
+      .hero h1 em {
+        font-style: italic;
+        color: var(--br);
+      }
+      .hero-body {
+        font-size: 17px;
+        line-height: 1.7;
+        color: var(--muted);
+        max-width: 600px;
+        margin-bottom: 2rem;
+        font-weight: 300;
+      }
+
+      /* Waitlist form */
+      .waitlist-form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .waitlist-form input[type="email"] {
+        flex: 1 1 240px;
+        padding: 12px 16px;
+        font-size: 15px;
+        font-family: "DM Sans", sans-serif;
+        border: 1.5px solid #ccc;
+        border-radius: 6px;
+        background: var(--bg);
+        color: var(--ink);
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .waitlist-form input[type="email"]:focus {
+        border-color: var(--br);
+      }
+      .waitlist-form input[type="email"].error {
+        border-color: var(--br);
+      }
+      .waitlist-form button {
+        padding: 12px 24px;
+        background: var(--br);
+        color: #fff;
+        font-size: 15px;
+        font-weight: 500;
+        font-family: "DM Sans", sans-serif;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.1s;
+        white-space: nowrap;
+      }
+      .waitlist-form button:hover {
+        background: var(--br-dark);
+      }
+      .waitlist-form button:active {
+        transform: scale(0.98);
+      }
+      .form-note {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .success-msg {
+        display: none;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--br);
+        padding: 12px 0;
+      }
+
+      /* Stats */
+      .stats-bar {
+        display: flex;
+        gap: 2rem;
+        padding: 2rem 0;
+        border-bottom: 0.5px solid var(--border);
+        flex-wrap: wrap;
+      }
+      .stat-num {
+        font-family: "Playfair Display", serif;
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-top: 2px;
+      }
+
+      /* Sections */
+      .section-label {
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--br);
+        font-weight: 500;
+        margin-bottom: 1.25rem;
+        padding-top: 2.5rem;
+      }
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: var(--ink);
+        margin-bottom: 2rem;
+      }
+
+      /* Features grid */
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 1.5px;
+        background: var(--border);
+        border: 1.5px solid var(--ink);
+      }
+      .feature {
+        padding: 1.5rem;
+        background: var(--bg);
+      }
+      .feature-icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 1rem;
+      }
+      .feature h3 {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--ink);
+        margin-bottom: 0.5rem;
+      }
+      .feature p {
+        font-size: 14px;
+        line-height: 1.6;
+        color: var(--muted);
+        font-weight: 300;
+      }
+
+      /* Builders grid */
+      .builders-section {
+        padding-top: 2.5rem;
+        border-top: 0.5px solid var(--border);
+        margin-top: 2.5rem;
+      }
+      .builders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+      }
+      .builder-card {
+        background: var(--bg);
+        padding: 1rem 1.25rem;
+      }
+      .builder-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--ink);
+        margin-bottom: 0.25rem;
+      }
+      .builder-meta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .builder-rating {
+        display: flex;
+        gap: 3px;
+        margin-top: 0.5rem;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--border);
+      }
+      .dot.filled {
+        background: var(--br);
+      }
+      .builders-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 0.75rem;
+      }
+
+      /* Manifesto */
+      .manifesto {
+        padding: 2.5rem 0;
+        border-top: 0.5px solid var(--border);
+        border-bottom: 0.5px solid var(--border);
+        margin: 2.5rem 0;
+      }
+      .manifesto blockquote {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(20px, 3vw, 26px);
+        font-weight: 700;
+        line-height: 1.35;
+        color: var(--ink);
+        border-left: 3px solid var(--br);
+        padding-left: 1.5rem;
+      }
+
+      /* Footer */
+      .footer {
+        padding-top: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        border-top: 0.5px solid var(--border);
+        margin-top: 1rem;
+      }
+      .footer-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 15px;
+        font-weight: 900;
+        color: var(--ink);
+      }
+      .footer-logo span {
+        color: var(--br);
+      }
+      .footer-copy {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      @media (max-width: 500px) {
+        .stats-bar {
+          gap: 1.25rem;
+        }
+        .waitlist-form {
+          flex-direction: column;
+        }
+        .waitlist-form button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <a class="logo" href="/"><span>Who</span>Built<sup>whobuilt.uk</sup></a>
+        <div class="pill">Coming soon</div>
+      </header>
+
+      <section class="hero">
+        <div class="overline">Independent New Build Intelligence · UK</div>
+        <h1><em>Who</em> built<br />your home?</h1>
+        <p class="hero-body">
+          WhoBuilt is the UK's first independent quality comparison service for
+          new build housebuilders — combining verified resident reviews,
+          warranty data, and expert build quality scores so buyers finally have
+          the truth.
+        </p>
+        <div class="waitlist-form">
+          <input
+            type="email"
+            id="email-input"
+            placeholder="your@email.com"
+            autocomplete="email"
+          />
+          <button
+            onclick="handleSignup('email-input', 'form-note', 'success-msg')"
+          >
+            Join the waitlist
+          </button>
+        </div>
+        <p class="form-note" id="form-note">
+          No spam. Early members get free access to our launch reports.
+        </p>
+        <p class="success-msg" id="success-msg">
+          You're on the list — we'll be in touch before launch.
+        </p>
+      </section>
+
+      <section class="stats-bar">
+        <div class="stat">
+          <div class="stat-num">£31bn</div>
+          <div class="stat-label">Annual new build market</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">220k+</div>
+          <div class="stat-label">New homes built per year</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">1 in 3</div>
+          <div class="stat-label">Buyers report major defects</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">Independent comparison services</div>
+        </div>
+      </section>
+
+      <div class="section-label">What we do</div>
+      <div class="section-title">Rigorous. Independent. Buyer-first.</div>
+
+      <div class="features">
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="4" fill="#FAECE7" />
+            <path
+              d="M8 20L16 10L24 20"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="16" cy="22" r="2" fill="#C8331A" />
+          </svg>
+          <h3>Build quality scores</h3>
+          <p>
+            Aggregated ratings across structural defects, finishing, and
+            snagging — verified against NHBC warranty data.
+          </p>
+        </div>
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="4" fill="#FAECE7" />
+            <circle cx="12" cy="14" r="4" stroke="#C8331A" stroke-width="2" />
+            <circle cx="21" cy="14" r="4" stroke="#C8331A" stroke-width="2" />
+            <path
+              d="M7 24c0-3 2-5 5-5h8c3 0 5 2 5 5"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <h3>Verified resident reviews</h3>
+          <p>
+            Post-completion reviews from real homeowners — not purchase-day
+            surveys filled in before the problems appear.
+          </p>
+        </div>
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="4" fill="#FAECE7" />
+            <rect
+              x="8"
+              y="10"
+              width="16"
+              height="14"
+              rx="1.5"
+              stroke="#C8331A"
+              stroke-width="2"
+            />
+            <path
+              d="M11 6L11 10M21 6L21 10M8 16L24 16"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <h3>After-sales tracking</h3>
+          <p>
+            How quickly do builders respond to defects? We track responsiveness
+            across the 2-year liability period.
+          </p>
+        </div>
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="4" fill="#FAECE7" />
+            <path
+              d="M8 24L8 14L14 18L20 10L26 14L26 24Z"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          <h3>Regional breakdown</h3>
+          <p>
+            A builder strong in the South East can be poor in the Midlands. We
+            surface performance by region and development.
+          </p>
+        </div>
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="4" fill="#FAECE7" />
+            <path
+              d="M16 8L18.5 13.5L25 14.3L20.5 18.5L21.7 25L16 22L10.3 25L11.5 18.5L7 14.3L13.5 13.5Z"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linejoin="round"
+              fill="none"
+            />
+          </svg>
+          <h3>Value for money</h3>
+          <p>
+            Spec vs. price analysis — what's included as standard versus what
+            other builders charge as extras.
+          </p>
+        </div>
+        <div class="feature">
+          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="4" fill="#FAECE7" />
+            <path
+              d="M10 22C10 16 12 12 16 10C20 12 22 16 22 22"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M13 22C13 18 14.5 15 16 14C17.5 15 19 18 19 22"
+              stroke="#C8331A"
+              stroke-width="1.5"
+              stroke-linecap="round"
+            />
+            <path
+              d="M8 22L24 22"
+              stroke="#C8331A"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          <h3>Sustainability ratings</h3>
+          <p>
+            Real-world EPC performance and energy bills — not just developer
+            claims about green credentials.
+          </p>
+        </div>
+      </div>
+
+      <section class="builders-section">
+        <div class="section-label">Builders we'll cover at launch</div>
+        <div class="builders-grid">
+          <div class="builder-card">
+            <div class="builder-name">Barratt Redrow</div>
+            <div class="builder-meta">~19,000 homes/yr</div>
+            <div class="builder-rating">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="builder-card">
+            <div class="builder-name">Taylor Wimpey</div>
+            <div class="builder-meta">~14,000 homes/yr</div>
+            <div class="builder-rating">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="builder-card">
+            <div class="builder-name">Persimmon</div>
+            <div class="builder-meta">~14,000 homes/yr</div>
+            <div class="builder-rating">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="builder-card">
+            <div class="builder-name">Vistry Group</div>
+            <div class="builder-meta">~17,000 homes/yr</div>
+            <div class="builder-rating">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="builder-card">
+            <div class="builder-name">Bellway</div>
+            <div class="builder-meta">~10,000 homes/yr</div>
+            <div class="builder-rating">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot"></div>
+            </div>
+          </div>
+          <div class="builder-card">
+            <div class="builder-name">Berkeley Group</div>
+            <div class="builder-meta">~5,000 homes/yr</div>
+            <div class="builder-rating">
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+              <div class="dot filled"></div>
+            </div>
+          </div>
+        </div>
+        <p class="builders-note">
+          Indicative quality ratings based on publicly available data. Full
+          methodology published at launch.
+        </p>
+      </section>
+
+      <section class="manifesto">
+        <blockquote>
+          "Buying a new build is one of the largest financial decisions of your
+          life. You deserve better than a developer's own five-star survey."
+        </blockquote>
+      </section>
+
+      <div class="section-label">Get early access</div>
+      <div class="section-title">Be first to know.</div>
+      <div class="waitlist-form">
+        <input
+          type="email"
+          id="email-input-2"
+          placeholder="your@email.com"
+          autocomplete="email"
+        />
+        <button onclick="handleSignup('email-input-2', null, 'success-msg-2')">
+          Notify me at launch
+        </button>
+      </div>
+      <p class="form-note">
+        Early waitlist members get free access to our launch reports.
+      </p>
+      <p class="success-msg" id="success-msg-2">
+        You're on the list — we'll be in touch before launch.
+      </p>
+
+      <footer class="footer">
+        <div class="footer-logo"><span>Who</span>Built</div>
+        <div class="footer-copy">
+          © 2026 WhoBuilt Ltd · Independent housing intelligence · whobuilt.uk
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      // ----- Waitlist (localStorage — swap for Mailchimp/ConvertKit API at launch) -----
+      const STORAGE_KEY = "whobuilt_waitlist";
+
+      function getList() {
+        try {
+          return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function saveEmail(email) {
+        const list = getList();
+        if (!list.includes(email)) {
+          list.push(email);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+        }
+      }
+
+      function handleSignup(inputId, noteId, successId) {
+        const input = document.getElementById(inputId);
+        const email = (input ? input.value : "").trim();
+        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        if (!valid) {
+          if (input) {
+            input.classList.add("error");
+            input.focus();
+          }
+          return;
+        }
+
+        if (input) input.classList.remove("error");
+        saveEmail(email);
+
+        const form = input ? input.closest(".waitlist-form") : null;
+        if (form) form.style.display = "none";
+        if (noteId) {
+          const n = document.getElementById(noteId);
+          if (n) n.style.display = "none";
+        }
+        const success = document.getElementById(successId);
+        if (success) success.style.display = "block";
+      }
+    </script>
+  </body>
+</html>
