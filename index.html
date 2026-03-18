@@ -647,27 +647,13 @@
     </div>
 
     <script>
-      // ----- Waitlist (localStorage — swap for Mailchimp/ConvertKit API at launch) -----
-      const STORAGE_KEY = "whobuilt_waitlist";
+      const FORMSPREE = "https://formspree.io/f/mzdjypjg";
 
-      function getList() {
-        try {
-          return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-        } catch (e) {
-          return [];
-        }
-      }
-
-      function saveEmail(email) {
-        const list = getList();
-        if (!list.includes(email)) {
-          list.push(email);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-        }
-      }
-
-      function handleSignup(inputId, noteId, successId) {
+      async function handleSignup(inputId, noteId, successId) {
         const input = document.getElementById(inputId);
+        const btn = input
+          ? input.closest(".waitlist-form").querySelector("button")
+          : null;
         const email = (input ? input.value : "").trim();
         const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
@@ -680,16 +666,44 @@
         }
 
         if (input) input.classList.remove("error");
-        saveEmail(email);
-
-        const form = input ? input.closest(".waitlist-form") : null;
-        if (form) form.style.display = "none";
-        if (noteId) {
-          const n = document.getElementById(noteId);
-          if (n) n.style.display = "none";
+        if (btn) {
+          btn.textContent = "Sending…";
+          btn.disabled = true;
         }
-        const success = document.getElementById(successId);
-        if (success) success.style.display = "block";
+
+        try {
+          const res = await fetch(FORMSPREE, {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          if (res.ok) {
+            const form = input ? input.closest(".waitlist-form") : null;
+            if (form) form.style.display = "none";
+            if (noteId) {
+              const n = document.getElementById(noteId);
+              if (n) n.style.display = "none";
+            }
+            const success = document.getElementById(successId);
+            if (success) success.style.display = "block";
+          } else {
+            if (btn) {
+              btn.textContent = "Try again";
+              btn.disabled = false;
+            }
+            alert("Something went wrong — please try again.");
+          }
+        } catch (e) {
+          if (btn) {
+            btn.textContent = "Try again";
+            btn.disabled = false;
+          }
+          alert("Network error — please check your connection and try again.");
+        }
       }
     </script>
   </body>
