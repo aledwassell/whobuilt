@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UK Housebuilder Satisfaction Scores — WhoBuilt</title>
+  <meta name="description" content="Interactive chart showing HBF customer satisfaction scores for major UK housebuilders from Q1 2021 to Q3 2025." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sage: #3D7A52;
+      --sage-dark: #2A5A3A;
+      --sage-light: #EBF4EE;
+      --sage-mid: #C4DFD0;
+      --red: #E03A2F;
+      --red-dark: #B02820;
+      --red-light: #FDEEED;
+      --ink: #1E2D24;
+      --muted: #6B7A6F;
+      --border: #D8E8DE;
+      --bg: #F5FAF6;
+      --bg-card: #FFFFFF;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+    /* Header */
+    .header { max-width: 900px; margin: 0 auto; padding: 1.5rem 1.5rem 0; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-icon { width: 32px; height: 32px; background: var(--sage); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-name { font-size: 18px; font-weight: 900; color: var(--ink); }
+    .logo-domain { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; display: block; }
+    .source-pill { font-size: 11px; font-weight: 700; background: var(--red-light); color: var(--red-dark); padding: 5px 12px; border-radius: 100px; }
+
+    /* Hero band */
+    .hero-band { background: var(--sage-light); margin: 1rem 0 0; padding: 2rem 1.5rem; }
+    .hero-inner { max-width: 900px; margin: 0 auto; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: var(--sage); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 100px; margin-bottom: 0.75rem; }
+    .hero-band h1 { font-family: 'Lora', serif; font-size: clamp(22px, 4vw, 36px); font-weight: 700; line-height: 1.2; color: var(--ink); margin-bottom: 0.5rem; }
+    .hero-band h1 em { font-style: italic; color: var(--red-dark); }
+    .hero-band p { font-size: 14px; color: #3a5040; font-weight: 600; line-height: 1.6; max-width: 620px; }
+
+    /* Stats strip */
+    .stats-strip { max-width: 900px; margin: 1.25rem auto 0; padding: 0 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .stat-card { background: var(--bg-card); border-radius: var(--radius-sm); padding: 1rem 1.25rem; border: 1.5px solid var(--border); }
+    .stat-num { font-family: 'Lora', serif; font-size: 24px; font-weight: 700; color: var(--red-dark); line-height: 1; margin-bottom: 3px; }
+    .stat-label { font-size: 11px; color: var(--muted); font-weight: 700; line-height: 1.4; }
+
+    /* Chart card */
+    .chart-wrap { max-width: 900px; margin: 1.25rem auto; padding: 0 1.5rem; }
+    .chart-card { background: var(--bg-card); border-radius: var(--radius); border: 1.5px solid var(--border); padding: 1.5rem; }
+    .chart-header { margin-bottom: 1.25rem; }
+    .chart-title { font-size: 15px; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+    .chart-sub { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap; }
+    .tab { padding: 6px 14px; font-size: 12px; font-weight: 700; border-radius: 100px; border: 1.5px solid var(--border); background: var(--bg); color: var(--muted); cursor: pointer; font-family: 'Nunito', sans-serif; transition: all 0.15s; }
+    .tab:hover { border-color: var(--sage); color: var(--sage); }
+    .tab.active { background: var(--sage); color: #fff; border-color: var(--sage); }
+
+    .chart-note { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); }
+
+    /* Insight cards */
+    .insights-wrap { max-width: 900px; margin: 0 auto 1.25rem; padding: 0 1.5rem; }
+    .insights-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 1rem; }
+    .insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px; }
+    .insight { background: var(--bg-card); border-radius: var(--radius-sm); padding: 1.1rem 1.25rem; border: 1.5px solid var(--border); }
+    .insight-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage); margin-bottom: 0.4rem; }
+    .insight-text { font-size: 13px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+    .insight-sub { font-size: 12px; color: var(--muted); font-weight: 600; margin-top: 3px; line-height: 1.4; }
+
+    /* CTA */
+    .cta-band { background: var(--red-light); padding: 2rem 1.5rem; margin-top: 1rem; }
+    .cta-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+    .cta-text h2 { font-family: 'Lora', serif; font-size: 20px; font-weight: 700; color: var(--red-dark); margin-bottom: 4px; }
+    .cta-text p { font-size: 13px; color: #7a3030; font-weight: 600; }
+    .cta-form { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cta-form input { padding: 10px 14px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; border: 2px solid #f5bfbb; border-radius: var(--radius-sm); background: #fff; color: var(--ink); outline: none; min-width: 220px; transition: border-color 0.15s; }
+    .cta-form input:focus { border-color: var(--red); }
+    .cta-form input.error { border-color: var(--red); }
+    .cta-form button { padding: 10px 20px; background: var(--red); color: #fff; font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+    .cta-form button:hover { background: var(--red-dark); }
+    .cta-success { display: none; font-size: 14px; font-weight: 800; color: var(--sage); padding: 10px 0; }
+
+    /* Footer */
+    .footer { max-width: 900px; margin: 0 auto; padding: 1.25rem 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; border-top: 1.5px solid var(--border); }
+    .footer-logo { font-size: 14px; font-weight: 900; color: var(--ink); }
+    .footer-copy { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+    @media (max-width: 500px) {
+      .cta-form { flex-direction: column; }
+      .cta-form input, .cta-form button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a class="logo" href="https://whobuilt.org">
+      <div class="logo-icon">
+        <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 15L10 5L16 15" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="16.5" r="1.5" fill="#fff"/></svg>
+      </div>
+      <div>
+        <span class="logo-name">WhoBuilt</span>
+        <span class="logo-domain">whobuilt.org</span>
+      </div>
+    </a>
+    <div class="source-pill">Source: HBF Survey Data</div>
+  </header>
+
+  <div class="hero-band">
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="#fff" stroke-width="1.5"/><path d="M6 4v3M6 8.5v.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        19 quarters · 10 major builders
+      </div>
+      <h1>Which builder do buyers actually <em>recommend</em>?</h1>
+      <p>HBF "Would you recommend your builder?" survey results for major UK housebuilders, Q1 2021 to Q3 2025. The gap between best and worst is bigger than the industry wants you to know.</p>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-card"><div class="stat-num">19</div><div class="stat-label">Quarters of data analysed</div></div>
+    <div class="stat-card"><div class="stat-num">10</div><div class="stat-label">Major builders tracked</div></div>
+    <div class="stat-card"><div class="stat-num accent">96.4%</div><div class="stat-label">Highest avg — Bloor Homes</div></div>
+    <div class="stat-card"><div class="stat-num">90.9%</div><div class="stat-label">Lowest avg — Crest Nicholson</div></div>
+    <div class="stat-card"><div class="stat-num">5.5pp</div><div class="stat-label">Spread between best &amp; worst</div></div>
+  </div>
+
+  <div class="chart-wrap">
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Housebuilder satisfaction scores</div>
+        <div class="chart-sub">% of buyers who would recommend their builder to a friend</div>
+      </div>
+      <div class="tabs">
+        <button class="tab active" onclick="showChart('trend', event)">Trend over time</button>
+        <button class="tab" onclick="showChart('ranking', event)">Overall ranking</button>
+        <button class="tab" onclick="showChart('latest', event)">Latest quarter</button>
+      </div>
+      <canvas id="myChart"></canvas>
+      <div class="chart-note" id="chart-note">Showing 10 major builders. Scores represent the percentage of buyers who said they would recommend their builder. Source: Home Builders Federation (HBF) Customer Satisfaction Survey.</div>
+    </div>
+  </div>
+
+  <div class="insights-wrap">
+    <div class="insights-title">What the data tells us</div>
+    <div class="insights">
+      <div class="insight">
+        <div class="insight-label">Consistently best</div>
+        <div class="insight-text">Bloor Homes &amp; CALA Homes</div>
+        <div class="insight-sub">Both maintain scores above 95% across nearly every quarter — far above the major-builder average.</div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">Most improved</div>
+        <div class="insight-text">Crest Nicholson</div>
+        <div class="insight-sub">Dropped sharply to 86.5% in Q3 2022, then recovered strongly to above 97% by 2024 — the biggest turnaround in the dataset.</div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">Notable dip</div>
+        <div class="insight-text">Persimmon Homes — Q3 2022</div>
+        <div class="insight-sub">Fell to 81.4% in Q3 2022, the lowest single-quarter score of any major builder in the dataset. Recovered to ~95% by 2025.</div>
+      </div>
+      <div class="insight">
+        <div class="insight-label">The industry problem</div>
+        <div class="insight-text">Surveys taken 8 weeks after completion</div>
+        <div class="insight-sub">The HBF survey is sent before most defects appear. NHBC's own 9-month survey scores run 5–10% lower — the "honeymoon effect."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <div class="cta-inner">
+      <div class="cta-text">
+        <h2>Want the full picture before you buy?</h2>
+        <p>WhoBuilt is building the UK's first independent housebuilder comparison service. Join the waitlist for free access at launch.</p>
+      </div>
+      <div>
+        <div class="cta-form">
+          <input type="email" id="cta-email" placeholder="your@email.com" autocomplete="email" />
+          <button onclick="handleSignup()">Join waitlist</button>
+        </div>
+        <div class="cta-success" id="cta-success">You're on the list — we'll be in touch before launch.</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-logo">WhoBuilt</div>
+    <div class="footer-copy">© 2026 WhoBuilt Ltd · whobuilt.org · Data source: HBF Customer Satisfaction Survey</div>
+  </footer>
+
+  <script>
+    const RAW = {
+      quarters: ['Q1 2021','Q2 2021','Q3 2021','Q4 2021','Q1 2022','Q2 2022','Q3 2022','Q4 2022','Q1 2023','Q2 2023','Q3 2023','Q4 2023','Q1 2024','Q2 2024','Q3 2024','Q4 2024','Q1 2025','Q2 2025','Q3 2025'],
+      builders: {
+        'Barratt Developments': [0.94,0.945,0.942,0.940,0.94,0.954,0.952,0.953,0.937,0.935,0.936,0.949,0.951,0.952,0.975,0.960,0.976,0.964,0.970],
+        'Taylor Wimpey':        [null,null,null,null,0.908,0.910,0.913,0.906,0.924,0.906,0.909,0.911,0.914,0.909,0.914,0.909,0.959,0.957,0.957],
+        'Persimmon Homes':      [0.908,0.937,0.916,0.920,0.913,0.943,0.814,0.913,0.904,0.905,0.918,0.911,0.940,0.941,0.909,0.926,0.952,0.957,0.954],
+        'Bellway Homes':        [0.938,0.943,0.936,0.930,0.931,0.909,0.923,0.940,0.935,0.923,0.946,0.956,0.956,0.938,0.938,0.960,0.957,0.958,0.963],
+        'Bloor Homes':          [0.948,0.944,0.952,0.953,0.956,0.954,0.968,0.946,0.946,0.953,0.953,0.964,0.975,0.960,0.951,0.958,0.960,0.960,0.963],
+        'Redrow Homes':         [0.928,0.976,0.928,0.924,0.928,0.933,0.916,0.969,0.969,0.976,0.921,0.935,null,null,null,null,null,null,null],
+        'Keepmoat':             [0.928,0.928,0.928,0.910,0.928,0.843,0.906,0.908,0.906,0.945,0.900,0.902,0.943,0.954,0.943,0.944,0.963,0.967,0.947],
+        'Crest Nicholson':      [0.930,0.925,0.913,0.890,0.925,0.899,0.882,0.939,0.873,0.865,0.899,0.903,0.968,0.952,0.968,0.950,0.975,0.975,0.963],
+        'Miller Homes':         [0.934,0.931,0.923,0.905,0.934,0.924,0.915,0.925,0.929,0.931,0.927,0.909,0.927,0.931,0.931,0.931,0.962,0.960,0.952],
+        'CALA Homes':           [0.950,0.948,0.945,0.950,0.950,0.954,0.936,0.954,0.932,0.944,0.950,0.974,0.978,0.954,0.959,0.961,0.978,0.964,0.964],
+      }
+    };
+
+    const COLOURS = [
+      '#3D7A52','#E03A2F','#2A5A3A','#B02820','#6BAF87',
+      '#F5A59A','#1a5c38','#c84b40','#4da675','#ff7c70'
+    ];
+
+    let chart = null;
+
+    function avg(arr) {
+      const v = arr.filter(x => x !== null);
+      return v.length ? v.reduce((a,b) => a+b,0)/v.length : null;
+    }
+    function pct(v) { return v !== null ? Math.round(v * 1000)/10 : null; }
+
+    function shortName(b) {
+      return b.replace(' Developments','').replace(' Homes','');
+    }
+
+    function makeChart(type, data, options) {
+      const ctx = document.getElementById('myChart').getContext('2d');
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, { type, data, options });
+    }
+
+    function showChart(view, event) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      if (event && event.target) event.target.classList.add('active');
+      const builders = Object.keys(RAW.builders);
+      const note = document.getElementById('chart-note');
+
+      if (view === 'trend') {
+        note.textContent = 'Trend over time — % of buyers who would recommend their builder. Q1 2021 – Q3 2025. Gaps indicate quarters with insufficient data.';
+        const datasets = builders.map((b, i) => ({
+          label: shortName(b),
+          data: RAW.builders[b].map(pct),
+          borderColor: COLOURS[i],
+          backgroundColor: COLOURS[i] + '18',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointHoverRadius: 5,
+          tension: 0.3,
+          spanGaps: true,
+        }));
+        makeChart('line', { labels: RAW.quarters, datasets }, {
+          responsive: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { family: 'Nunito', size: 11 }, boxWidth: 12, padding: 10 } },
+            tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y !== null ? ctx.parsed.y.toFixed(1)+'%' : 'n/a'}` } }
+          },
+          scales: {
+            y: { min: 78, max: 100, ticks: { callback: v => v+'%', font: { family:'Nunito', size:11 } }, grid: { color: 'rgba(0,0,0,0.06)' } },
+            x: { ticks: { font: { family:'Nunito', size:10 }, maxRotation: 45 }, grid: { display: false } }
+          }
+        });
+
+      } else if (view === 'ranking') {
+        note.textContent = 'Average satisfaction score across all available quarters. Only builders with 4+ data points included.';
+        const avgs = builders
+          .map(b => ({ b: shortName(b), v: pct(avg(RAW.builders[b])) }))
+          .filter(x => x.v !== null)
+          .sort((a,b) => b.v - a.v);
+        makeChart('bar',
+          { labels: avgs.map(x=>x.b), datasets: [{ label: 'Avg score', data: avgs.map(x=>x.v), backgroundColor: avgs.map((_,i) => COLOURS[i % COLOURS.length]), borderRadius: 8, borderSkipped: false }] },
+          {
+            indexAxis: 'y', responsive: true,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x.toFixed(1)}%` } } },
+            scales: {
+              x: { min: 88, max: 100, ticks: { callback: v=>v+'%', font:{family:'Nunito',size:11} }, grid:{color:'rgba(0,0,0,0.06)'} },
+              y: { ticks: { font:{family:'Nunito',size:12, weight:'700'} }, grid:{display:false} }
+            }
+          }
+        );
+
+      } else if (view === 'latest') {
+        note.textContent = 'Most recent available quarter score for each builder.';
+        const latest = builders.map(b => {
+          const arr = RAW.builders[b];
+          const v = [...arr].reverse().find(x => x !== null);
+          const qIdx = [...arr].reverse().findIndex(x => x !== null);
+          const q = RAW.quarters[arr.length - 1 - qIdx];
+          return { b: shortName(b), v: pct(v), q };
+        }).filter(x => x.v !== null).sort((a,b) => b.v - a.v);
+        makeChart('bar',
+          { labels: latest.map(x=>x.b), datasets: [{ label: 'Latest score', data: latest.map(x=>x.v), backgroundColor: latest.map((_,i) => COLOURS[i % COLOURS.length]), borderRadius: 8, borderSkipped: false }] },
+          {
+            indexAxis: 'y', responsive: true,
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.x.toFixed(1)}%` } } },
+            scales: {
+              x: { min: 88, max: 100, ticks: { callback: v=>v+'%', font:{family:'Nunito',size:11} }, grid:{color:'rgba(0,0,0,0.06)'} },
+              y: { ticks: { font:{family:'Nunito',size:12,weight:'700'} }, grid:{display:false} }
+            }
+          }
+        );
+      }
+    }
+
+    // Waitlist
+    const FORMSPREE = 'https://formspree.io/f/mzdjypjg';
+    async function handleSignup() {
+      const input = document.getElementById('cta-email');
+      const btn = input.closest('.cta-form').querySelector('button');
+      const email = input.value.trim();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { input.classList.add('error'); input.focus(); return; }
+      input.classList.remove('error');
+      btn.textContent = 'Sending…'; btn.disabled = true;
+      try {
+        const res = await fetch(FORMSPREE, { method:'POST', headers:{'Accept':'application/json','Content-Type':'application/json'}, body: JSON.stringify({ email }) });
+        if (res.ok) {
+          document.querySelector('.cta-form').style.display = 'none';
+          document.getElementById('cta-success').style.display = 'block';
+        } else { btn.textContent = 'Try again'; btn.disabled = false; }
+      } catch(e) { btn.textContent = 'Try again'; btn.disabled = false; }
+    }
+
+    // Init on load
+    window.addEventListener('load', () => showChart('trend', { target: document.querySelector('.tab') }));
+  </script>
+</body>
+</html>
