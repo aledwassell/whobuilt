@@ -13,7 +13,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,600;1,700&display=swap"
       rel="stylesheet"
     />
     <style>
@@ -25,26 +25,31 @@
         padding: 0;
       }
       :root {
-        --br: #c8331a;
-        --br-dark: #8c2210;
-        --br-light: #faece7;
-        --ink: #1a1a18;
-        --muted: #6b6b66;
-        --border: #e2e0d8;
-        --bg: #ffffff;
-        --bg-secondary: #f7f5f0;
+        --sage: #3d7a52;
+        --sage-dark: #2a5a3a;
+        --sage-light: #ebf4ee;
+        --sage-mid: #c4dfd0;
+        --red: #e03a2f;
+        --red-dark: #b02820;
+        --red-light: #fdeeed;
+        --ink: #1e2d24;
+        --muted: #6b7a6f;
+        --border: #d8e8de;
+        --bg: #f5faf6;
+        --bg-card: #ffffff;
+        --radius: 16px;
+        --radius-sm: 10px;
       }
       html {
         scroll-behavior: smooth;
       }
       body {
-        font-family: "DM Sans", sans-serif;
+        font-family: "Nunito", sans-serif;
         background: var(--bg);
         color: var(--ink);
       }
-
       .page {
-        max-width: 860px;
+        max-width: 900px;
         margin: 0 auto;
         padding: 0 1.5rem 5rem;
       }
@@ -54,233 +59,317 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 1.75rem 0 1rem;
-        border-bottom: 1.5px solid var(--ink);
+        padding: 1.5rem 0;
       }
       .logo {
-        font-family: "Playfair Display", serif;
-        font-size: 22px;
+        font-family: "Nunito", sans-serif;
+        font-size: 24px;
         font-weight: 900;
-        letter-spacing: -0.5px;
         color: var(--ink);
         text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
-      .logo span {
-        color: var(--br);
+      .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--sage);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
-      .logo sup {
-        font-size: 11px;
-        font-family: "DM Sans", sans-serif;
-        font-weight: 500;
+      .logo-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1;
+      }
+      .logo-name {
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--ink);
+      }
+      .logo-domain {
+        font-size: 10px;
+        font-weight: 600;
         color: var(--muted);
-        vertical-align: super;
-        margin-left: 2px;
         letter-spacing: 0.04em;
       }
       .pill {
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        background: var(--br-light);
-        color: var(--br-dark);
-        padding: 4px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        background: var(--red-light);
+        color: var(--red-dark);
+        padding: 6px 14px;
         border-radius: 100px;
       }
 
       /* Hero */
       .hero {
-        padding: 3.5rem 0 2.5rem;
-        border-bottom: 0.5px solid var(--border);
+        background: var(--sage-light);
+        border-radius: 24px;
+        padding: 3rem 2.5rem;
+        margin: 0.5rem 0 1.5rem;
+        position: relative;
+        overflow: hidden;
       }
-      .overline {
+      .hero-bg {
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        width: 220px;
+        height: 220px;
+        background: var(--sage-mid);
+        border-radius: 50%;
+        opacity: 0.5;
+      }
+      .hero-bg2 {
+        position: absolute;
+        right: 60px;
+        bottom: -40px;
+        width: 140px;
+        height: 140px;
+        background: var(--sage);
+        border-radius: 50%;
+        opacity: 0.12;
+      }
+      .hero-content {
+        position: relative;
+        z-index: 1;
+      }
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--sage);
+        color: #fff;
         font-size: 11px;
-        letter-spacing: 0.12em;
+        font-weight: 800;
+        letter-spacing: 0.06em;
         text-transform: uppercase;
-        color: var(--br);
-        font-weight: 500;
-        margin-bottom: 1rem;
+        padding: 5px 12px;
+        border-radius: 100px;
+        margin-bottom: 1.25rem;
       }
       .hero h1 {
-        font-family: "Playfair Display", serif;
-        font-size: clamp(40px, 6vw, 66px);
-        font-weight: 900;
-        line-height: 1;
+        font-family: "Lora", serif;
+        font-size: clamp(34px, 5vw, 56px);
+        font-weight: 700;
+        line-height: 1.1;
         color: var(--ink);
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
+        max-width: 580px;
       }
       .hero h1 em {
         font-style: italic;
-        color: var(--br);
+        color: var(--red-dark);
       }
       .hero-body {
-        font-size: 17px;
+        font-size: 16px;
         line-height: 1.7;
-        color: var(--muted);
-        max-width: 600px;
+        color: #3a5040;
+        max-width: 540px;
         margin-bottom: 2rem;
-        font-weight: 300;
+        font-weight: 600;
       }
 
-      /* Waitlist form */
-      .waitlist-form {
+      /* Form */
+      .form-wrap {
+        background: #fff;
+        border-radius: var(--radius);
+        padding: 1.25rem;
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
-        margin-bottom: 1rem;
+        box-shadow: 0 2px 16px rgba(30, 45, 36, 0.08);
+        max-width: 520px;
       }
-      .waitlist-form input[type="email"] {
+      .form-wrap input[type="email"] {
         flex: 1 1 40px;
-        padding: 12px 16px;
+        padding: 11px 14px;
         font-size: 15px;
-        font-family: "DM Sans", sans-serif;
-        border: 1.5px solid #ccc;
-        border-radius: 6px;
+        font-family: "Nunito", sans-serif;
+        font-weight: 600;
+        border: 2px solid var(--border);
+        border-radius: var(--radius-sm);
         background: var(--bg);
         color: var(--ink);
         outline: none;
         transition: border-color 0.15s;
       }
-      .waitlist-form input[type="email"]:focus {
-        border-color: var(--br);
+      .form-wrap input[type="email"]:focus {
+        border-color: var(--sage);
       }
-      .waitlist-form input[type="email"].error {
-        border-color: var(--br);
+      .form-wrap input[type="email"].error {
+        border-color: var(--red);
       }
-      .waitlist-form button {
-        padding: 12px 24px;
-        background: var(--br);
+      .form-wrap button {
+        padding: 11px 22px;
+        background: var(--sage);
         color: #fff;
-        font-size: 15px;
-        font-weight: 500;
-        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 800;
+        font-family: "Nunito", sans-serif;
         border: none;
-        border-radius: 6px;
+        border-radius: var(--radius-sm);
         cursor: pointer;
         transition:
           background 0.15s,
           transform 0.1s;
         white-space: nowrap;
       }
-      .waitlist-form button:hover {
-        background: var(--br-dark);
+      .form-wrap button:hover {
+        background: var(--sage-dark);
       }
-      .waitlist-form button:active {
-        transform: scale(0.98);
+      .form-wrap button:active {
+        transform: scale(0.97);
       }
       .form-note {
-        font-size: 13px;
+        font-size: 12px;
         color: var(--muted);
+        font-weight: 600;
+        margin-top: 0.6rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
       }
       .success-msg {
         display: none;
         font-size: 15px;
-        font-weight: 500;
-        color: var(--br);
-        padding: 12px 0;
+        font-weight: 800;
+        color: var(--sage);
+        padding: 10px 0;
       }
 
       /* Stats */
       .stats-bar {
-        display: flex;
-        gap: 2rem;
-        padding: 2rem 0;
-        border-bottom: 0.5px solid var(--border);
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 12px;
+        margin-bottom: 1.5rem;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        border: 1.5px solid var(--border);
       }
       .stat-num {
-        font-family: "Playfair Display", serif;
-        font-size: 30px;
+        font-family: "Lora", serif;
+        font-size: 28px;
         font-weight: 700;
         color: var(--ink);
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .stat-num.accent {
+        color: var(--red-dark);
       }
       .stat-label {
         font-size: 12px;
         color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        margin-top: 2px;
+        font-weight: 700;
+        line-height: 1.4;
       }
 
       /* Sections */
-      .section-label {
-        font-size: 11px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--br);
-        font-weight: 500;
+      .section-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         margin-bottom: 1.25rem;
-        padding-top: 2.5rem;
+        padding-top: 2rem;
+      }
+      .section-tag {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        background: var(--red-light);
+        color: var(--red-dark);
+        padding: 4px 10px;
+        border-radius: 100px;
       }
       .section-title {
-        font-family: "Playfair Display", serif;
-        font-size: 28px;
+        font-family: "Lora", serif;
+        font-size: 26px;
         font-weight: 700;
         color: var(--ink);
-        margin-bottom: 2rem;
+        margin-bottom: 1.25rem;
       }
 
-      /* Features grid */
+      /* Features */
       .features {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 1.5px;
-        background: var(--border);
-        border: 1.5px solid var(--ink);
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+        margin-bottom: 1.5rem;
       }
       .feature {
+        background: var(--bg-card);
+        border-radius: var(--radius);
         padding: 1.5rem;
-        background: var(--bg);
+        border: 1.5px solid var(--border);
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
       }
-      .feature-icon {
-        width: 32px;
-        height: 32px;
+      .feature:hover {
+        border-color: var(--sage);
+        transform: translateY(-2px);
+      }
+      .feature-icon-wrap {
+        width: 44px;
+        height: 44px;
+        background: var(--sage-light);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-bottom: 1rem;
       }
       .feature h3 {
         font-size: 15px;
-        font-weight: 500;
+        font-weight: 800;
         color: var(--ink);
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.4rem;
       }
       .feature p {
-        font-size: 14px;
+        font-size: 13px;
         line-height: 1.6;
         color: var(--muted);
-        font-weight: 300;
+        font-weight: 600;
       }
 
-      /* Builders grid */
-      .builders-section {
-        padding-top: 2.5rem;
-        border-top: 0.5px solid var(--border);
-        margin-top: 2.5rem;
-      }
+      /* Builders */
       .builders-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 1px;
-        background: var(--border);
-        border: 0.5px solid var(--border);
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-bottom: 0.75rem;
       }
       .builder-card {
-        background: var(--bg);
-        padding: 1rem 1.25rem;
+        background: var(--bg-card);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.1rem;
+        border: 1.5px solid var(--border);
       }
       .builder-name {
-        font-size: 14px;
-        font-weight: 500;
+        font-size: 13px;
+        font-weight: 800;
         color: var(--ink);
-        margin-bottom: 0.25rem;
+        margin-bottom: 3px;
       }
       .builder-meta {
-        font-size: 12px;
+        font-size: 11px;
         color: var(--muted);
+        font-weight: 600;
+        margin-bottom: 8px;
       }
       .builder-rating {
         display: flex;
         gap: 3px;
-        margin-top: 0.5rem;
       }
       .dot {
         width: 8px;
@@ -289,65 +378,90 @@
         background: var(--border);
       }
       .dot.filled {
-        background: var(--br);
+        background: var(--sage);
       }
       .builders-note {
-        font-size: 12px;
+        font-size: 11px;
         color: var(--muted);
-        margin-top: 0.75rem;
+        font-weight: 600;
       }
 
       /* Manifesto */
       .manifesto {
-        padding: 2.5rem 0;
-        border-top: 0.5px solid var(--border);
-        border-bottom: 0.5px solid var(--border);
-        margin: 2.5rem 0;
+        background: var(--ink);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin: 2rem 0;
       }
       .manifesto blockquote {
-        font-family: "Playfair Display", serif;
-        font-size: clamp(20px, 3vw, 26px);
+        font-family: "Lora", serif;
+        font-size: clamp(18px, 2.5vw, 24px);
+        font-weight: 600;
+        font-style: italic;
+        line-height: 1.45;
+        color: var(--sage-light);
+      }
+      .manifesto cite {
+        display: block;
+        margin-top: 1rem;
+        font-size: 13px;
+        font-style: normal;
         font-weight: 700;
-        line-height: 1.35;
-        color: var(--ink);
-        border-left: 3px solid var(--br);
-        padding-left: 1.5rem;
+        color: var(--red);
+        font-family: "Nunito", sans-serif;
+      }
+
+      /* CTA */
+      .cta-block {
+        background: var(--red-light);
+        border-radius: 24px;
+        padding: 2.5rem;
+        margin-bottom: 2rem;
+      }
+      .cta-block .section-title {
+        color: var(--red-dark);
+        margin-bottom: 0.5rem;
+      }
+      .cta-sub {
+        font-size: 15px;
+        color: #7a3030;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
       }
 
       /* Footer */
       .footer {
-        padding-top: 1.5rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
         gap: 0.5rem;
-        border-top: 0.5px solid var(--border);
-        margin-top: 1rem;
+        padding-top: 1.5rem;
+        border-top: 1.5px solid var(--border);
       }
       .footer-logo {
-        font-family: "Playfair Display", serif;
         font-size: 15px;
         font-weight: 900;
         color: var(--ink);
       }
-      .footer-logo span {
-        color: var(--br);
-      }
       .footer-copy {
         font-size: 12px;
         color: var(--muted);
+        font-weight: 600;
       }
 
       @media (max-width: 500px) {
-        .stats-bar {
-          gap: 1.25rem;
+        .hero {
+          padding: 2rem 1.5rem;
         }
-        .waitlist-form {
+        .form-wrap {
           flex-direction: column;
         }
-        .waitlist-form button {
+        .form-wrap button {
           width: 100%;
+        }
+        .stats-bar {
+          grid-template-columns: 1fr 1fr;
         }
       }
     </style>
@@ -355,77 +469,121 @@
   <body>
     <div class="page">
       <header class="header">
-        <a class="logo" href="/"
-          ><span>Who</span>Built<sup>whobuilt.org</sup></a
-        >
+        <a class="logo" href="/">
+          <div class="logo-icon">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path
+                d="M4 15L10 5L16 15"
+                stroke="#fff"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="10" cy="16.5" r="1.5" fill="#fff" />
+            </svg>
+          </div>
+          <div class="logo-text">
+            <span class="logo-name">WhoBuilt</span>
+            <span class="logo-domain">whobuilt.org</span>
+          </div>
+        </a>
         <div class="pill">Coming soon</div>
       </header>
 
       <section class="hero">
-        <div class="overline">Independent New Build Intelligence · UK</div>
-        <h1><em>Who</em> built<br />your home?</h1>
-        <p class="hero-body">
-          WhoBuilt is the UK's first independent quality comparison service for
-          new build housebuilders — combining verified resident reviews,
-          warranty data, and expert build quality scores so buyers finally have
-          the truth.
-        </p>
-        <div class="waitlist-form">
-          <input
-            type="email"
-            id="email-input"
-            placeholder="your@email.com"
-            autocomplete="email"
-          />
-          <button
-            onclick="handleSignup('email-input', 'form-note', 'success-msg')"
-          >
-            Join the waitlist
-          </button>
+        <div class="hero-bg"></div>
+        <div class="hero-bg2"></div>
+        <div class="hero-content">
+          <div class="hero-tag">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <circle cx="6" cy="6" r="5" stroke="#fff" stroke-width="1.5" />
+              <path
+                d="M6 4v3M6 8.5v.5"
+                stroke="#fff"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+            Independent · UK new builds
+          </div>
+          <h1>Find out <em>who really</em> builds a quality home</h1>
+          <p class="hero-body">
+            The honest, independent guide to UK housebuilders — so you can
+            choose with confidence, not hope.
+          </p>
+          <div class="form-wrap">
+            <input
+              type="email"
+              id="email-input"
+              placeholder="your@email.com"
+              autocomplete="email"
+            />
+            <button
+              onclick="handleSignup('email-input', 'form-note', 'success-msg')"
+            >
+              Join waitlist
+            </button>
+          </div>
+          <p class="form-note" id="form-note">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path
+                d="M2 6.5l3 3 5-5"
+                stroke="#3D7A52"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            No spam. Free access to our launch reports for early members.
+          </p>
+          <p class="success-msg" id="success-msg">
+            You're on the list — we'll be in touch before launch.
+          </p>
         </div>
-        <p class="form-note" id="form-note">
-          No spam. Early members get free access to our launch reports.
-        </p>
-        <p class="success-msg" id="success-msg">
-          You're on the list — we'll be in touch before launch.
-        </p>
       </section>
 
-      <section class="stats-bar">
-        <div class="stat">
-          <div class="stat-num">£31bn</div>
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-num accent">£31bn</div>
           <div class="stat-label">Annual new build market</div>
         </div>
-        <div class="stat">
+        <div class="stat-card">
           <div class="stat-num">220k+</div>
           <div class="stat-label">New homes built per year</div>
         </div>
-        <div class="stat">
-          <div class="stat-num">1 in 3</div>
+        <div class="stat-card">
+          <div class="stat-num accent">1 in 3</div>
           <div class="stat-label">Buyers report major defects</div>
         </div>
-        <div class="stat">
-          <div class="stat-num">0</div>
-          <div class="stat-label">Independent comparison services</div>
+        <div class="stat-card">
+          <div class="stat-num">Zero</div>
+          <div class="stat-label">
+            Independent comparison services — until now
+          </div>
         </div>
-      </section>
+      </div>
 
-      <div class="section-label">What we do</div>
-      <div class="section-title">Rigorous. Independent. Buyer-first.</div>
+      <div class="section-header">
+        <div class="section-tag">What we do</div>
+      </div>
+      <div class="section-title">
+        Everything buyers wish they'd known before signing.
+      </div>
 
       <div class="features">
         <div class="feature">
-          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="4" fill="#FAECE7" />
-            <path
-              d="M8 20L16 10L24 20"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <circle cx="16" cy="22" r="2" fill="#C8331A" />
-          </svg>
+          <div class="feature-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path
+                d="M4 16L11 6L18 16"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <circle cx="11" cy="18" r="1.5" fill="#3D7A52" />
+            </svg>
+          </div>
           <h3>Build quality scores</h3>
           <p>
             Aggregated ratings across structural defects, finishing, and
@@ -433,217 +591,226 @@
           </p>
         </div>
         <div class="feature">
-          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="4" fill="#FAECE7" />
-            <circle cx="12" cy="14" r="4" stroke="#C8331A" stroke-width="2" />
-            <circle cx="21" cy="14" r="4" stroke="#C8331A" stroke-width="2" />
-            <path
-              d="M7 24c0-3 2-5 5-5h8c3 0 5 2 5 5"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
+          <div class="feature-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="8" cy="9" r="3.5" stroke="#3D7A52" stroke-width="2" />
+              <circle
+                cx="15"
+                cy="9"
+                r="3.5"
+                stroke="#3D7A52"
+                stroke-width="2"
+              />
+              <path
+                d="M3 19c0-2.5 2-4 5-4h6c3 0 5 1.5 5 4"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
           <h3>Verified resident reviews</h3>
           <p>
             Post-completion reviews from real homeowners — not purchase-day
-            surveys filled in before the problems appear.
+            surveys before problems appear.
           </p>
         </div>
         <div class="feature">
-          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="4" fill="#FAECE7" />
-            <rect
-              x="8"
-              y="10"
-              width="16"
-              height="14"
-              rx="1.5"
-              stroke="#C8331A"
-              stroke-width="2"
-            />
-            <path
-              d="M11 6L11 10M21 6L21 10M8 16L24 16"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
+          <div class="feature-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <rect
+                x="4"
+                y="7"
+                width="14"
+                height="12"
+                rx="2"
+                stroke="#3D7A52"
+                stroke-width="2"
+              />
+              <path
+                d="M7 3v4M15 3v4M4 11h14"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
           <h3>After-sales tracking</h3>
           <p>
-            How quickly do builders respond to defects? We track responsiveness
-            across the 2-year liability period.
+            How quickly do builders fix problems? We track responsiveness across
+            the 2-year liability period.
           </p>
         </div>
         <div class="feature">
-          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="4" fill="#FAECE7" />
-            <path
-              d="M8 24L8 14L14 18L20 10L26 14L26 24Z"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linejoin="round"
-              fill="none"
-            />
-          </svg>
+          <div class="feature-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path
+                d="M4 18L4 10L8 13L13 6L18 10L18 18Z"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
           <h3>Regional breakdown</h3>
           <p>
             A builder strong in the South East can be poor in the Midlands. We
-            surface performance by region and development.
+            surface performance by region.
           </p>
         </div>
         <div class="feature">
-          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="4" fill="#FAECE7" />
-            <path
-              d="M16 8L18.5 13.5L25 14.3L20.5 18.5L21.7 25L16 22L10.3 25L11.5 18.5L7 14.3L13.5 13.5Z"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linejoin="round"
-              fill="none"
-            />
-          </svg>
+          <div class="feature-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path
+                d="M11 3L13.5 9L20 9.8L15.5 14L17 20L11 17L5 20L6.5 14L2 9.8L8.5 9Z"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linejoin="round"
+                fill="none"
+              />
+            </svg>
+          </div>
           <h3>Value for money</h3>
           <p>
-            Spec vs. price analysis — what's included as standard versus what
-            other builders charge as extras.
+            What's included as standard vs. what others charge as extras — a
+            true apples-to-apples comparison.
           </p>
         </div>
         <div class="feature">
-          <svg class="feature-icon" viewBox="0 0 32 32" fill="none">
-            <rect width="32" height="32" rx="4" fill="#FAECE7" />
-            <path
-              d="M10 22C10 16 12 12 16 10C20 12 22 16 22 22"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-            <path
-              d="M13 22C13 18 14.5 15 16 14C17.5 15 19 18 19 22"
-              stroke="#C8331A"
-              stroke-width="1.5"
-              stroke-linecap="round"
-            />
-            <path
-              d="M8 22L24 22"
-              stroke="#C8331A"
-              stroke-width="2"
-              stroke-linecap="round"
-            />
-          </svg>
+          <div class="feature-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path
+                d="M6 18C6 12 8 8 11 6C14 8 16 12 16 18"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+              <path
+                d="M4 18h14"
+                stroke="#3D7A52"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
           <h3>Sustainability ratings</h3>
           <p>
-            Real-world EPC performance and energy bills — not just developer
-            claims about green credentials.
+            Real-world EPC performance and energy bills — not developer claims
+            about green credentials.
           </p>
         </div>
       </div>
 
-      <section class="builders-section">
-        <div class="section-label">Builders we'll cover at launch</div>
-        <div class="builders-grid">
-          <div class="builder-card">
-            <div class="builder-name">Barratt Redrow</div>
-            <div class="builder-meta">~19,000 homes/yr</div>
-            <div class="builder-rating">
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot"></div>
-            </div>
-          </div>
-          <div class="builder-card">
-            <div class="builder-name">Taylor Wimpey</div>
-            <div class="builder-meta">~14,000 homes/yr</div>
-            <div class="builder-rating">
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-          </div>
-          <div class="builder-card">
-            <div class="builder-name">Persimmon</div>
-            <div class="builder-meta">~14,000 homes/yr</div>
-            <div class="builder-rating">
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-          </div>
-          <div class="builder-card">
-            <div class="builder-name">Vistry Group</div>
-            <div class="builder-meta">~17,000 homes/yr</div>
-            <div class="builder-rating">
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot"></div>
-            </div>
-          </div>
-          <div class="builder-card">
-            <div class="builder-name">Bellway</div>
-            <div class="builder-meta">~10,000 homes/yr</div>
-            <div class="builder-rating">
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot"></div>
-            </div>
-          </div>
-          <div class="builder-card">
-            <div class="builder-name">Berkeley Group</div>
-            <div class="builder-meta">~5,000 homes/yr</div>
-            <div class="builder-rating">
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-              <div class="dot filled"></div>
-            </div>
+      <div class="section-header">
+        <div class="section-tag">Builders we'll cover</div>
+      </div>
+      <div class="builders-grid">
+        <div class="builder-card">
+          <div class="builder-name">Barratt Redrow</div>
+          <div class="builder-meta">~19,000 homes/yr</div>
+          <div class="builder-rating">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot"></div>
           </div>
         </div>
-        <p class="builders-note">
-          Indicative quality ratings based on publicly available data. Full
-          methodology published at launch.
-        </p>
-      </section>
+        <div class="builder-card">
+          <div class="builder-name">Taylor Wimpey</div>
+          <div class="builder-meta">~14,000 homes/yr</div>
+          <div class="builder-rating">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-name">Persimmon</div>
+          <div class="builder-meta">~14,000 homes/yr</div>
+          <div class="builder-rating">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-name">Vistry Group</div>
+          <div class="builder-meta">~17,000 homes/yr</div>
+          <div class="builder-rating">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-name">Bellway</div>
+          <div class="builder-meta">~10,000 homes/yr</div>
+          <div class="builder-rating">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+        <div class="builder-card">
+          <div class="builder-name">Berkeley Group</div>
+          <div class="builder-meta">~5,000 homes/yr</div>
+          <div class="builder-rating">
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+            <div class="dot filled"></div>
+          </div>
+        </div>
+      </div>
+      <p class="builders-note">
+        Indicative ratings based on publicly available data. Full methodology
+        published at launch.
+      </p>
 
-      <section class="manifesto">
+      <div class="manifesto">
         <blockquote>
           "Buying a new build is one of the largest financial decisions of your
           life. You deserve better than a developer's own five-star survey."
         </blockquote>
-      </section>
-
-      <div class="section-label">Get early access</div>
-      <div class="section-title">Be first to know.</div>
-      <div class="waitlist-form">
-        <input
-          type="email"
-          id="email-input-2"
-          placeholder="your@email.com"
-          autocomplete="email"
-        />
-        <button onclick="handleSignup('email-input-2', null, 'success-msg-2')">
-          Notify me at launch
-        </button>
+        <cite>— The WhoBuilt mission</cite>
       </div>
-      <p class="form-note">
-        Early waitlist members get free access to our launch reports.
-      </p>
-      <p class="success-msg" id="success-msg-2">
-        You're on the list — we'll be in touch before launch.
-      </p>
+
+      <div class="cta-block">
+        <div class="section-title">Be first to know.</div>
+        <p class="cta-sub">
+          Early members get free access to every report we publish at launch.
+        </p>
+        <div class="form-wrap">
+          <input
+            type="email"
+            id="email-input-2"
+            placeholder="your@email.com"
+            autocomplete="email"
+          />
+          <button
+            onclick="handleSignup('email-input-2', null, 'success-msg-2')"
+          >
+            Notify me
+          </button>
+        </div>
+        <p class="success-msg" id="success-msg-2">
+          You're on the list — we'll be in touch before launch.
+        </p>
+      </div>
 
       <footer class="footer">
-        <div class="footer-logo"><span>Who</span>Built</div>
+        <div class="footer-logo">WhoBuilt</div>
         <div class="footer-copy">
           © 2026 WhoBuilt Ltd · Independent housing intelligence · whobuilt.org
         </div>
@@ -656,12 +823,11 @@
       async function handleSignup(inputId, noteId, successId) {
         const input = document.getElementById(inputId);
         const btn = input
-          ? input.closest(".waitlist-form").querySelector("button")
+          ? input.closest(".form-wrap").querySelector("button")
           : null;
         const email = (input ? input.value : "").trim();
-        const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-        if (!valid) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           if (input) {
             input.classList.add("error");
             input.focus();
@@ -669,7 +835,7 @@
           return;
         }
 
-        if (input) input.classList.remove("error");
+        input.classList.remove("error");
         if (btn) {
           btn.textContent = "Sending…";
           btn.disabled = true;
@@ -686,14 +852,14 @@
           });
 
           if (res.ok) {
-            const form = input ? input.closest(".waitlist-form") : null;
+            const form = input.closest(".form-wrap");
             if (form) form.style.display = "none";
             if (noteId) {
               const n = document.getElementById(noteId);
               if (n) n.style.display = "none";
             }
-            const success = document.getElementById(successId);
-            if (success) success.style.display = "block";
+            const s = document.getElementById(successId);
+            if (s) s.style.display = "block";
           } else {
             if (btn) {
               btn.textContent = "Try again";
@@ -706,7 +872,7 @@
             btn.textContent = "Try again";
             btn.disabled = false;
           }
-          alert("Network error — please check your connection and try again.");
+          alert("Network error — please try again.");
         }
       }
     </script>
