@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Builders Near You — WhoBuilt</title>
+  <meta name="description" content="Search by postcode to see how housebuilders rate in your area." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Lora:ital,wght@0,600;0,700;1,600;1,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sage: #3D7A52; --sage-dark: #2A5A3A; --sage-light: #EBF4EE; --sage-mid: #C4DFD0;
+      --red: #E03A2F; --red-dark: #B02820; --red-light: #FDEEED;
+      --ink: #1E2D24; --muted: #6B7A6F; --border: #D8E8DE;
+      --bg: #F5FAF6; --bg-card: #FFFFFF; --radius: 16px; --radius-sm: 10px;
+      --score-high: #3D7A52; --score-mid: #E8960C; --score-low: #E03A2F;
+    }
+    html, body { height: 100%; font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--ink); }
+
+    /* Layout */
+    .app { display: flex; flex-direction: column; height: 100vh; }
+
+    /* Header */
+    .header { background: var(--bg-card); border-bottom: 1.5px solid var(--border); padding: 0.875rem 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 1000; }
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: var(--sage); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .logo-name { font-size: 17px; font-weight: 900; color: var(--ink); }
+    .logo-domain { font-size: 9px; font-weight: 600; color: var(--muted); display: block; letter-spacing: 0.04em; }
+    .header-tag { font-size: 11px; font-weight: 700; background: var(--red-light); color: var(--red-dark); padding: 4px 10px; border-radius: 100px; }
+
+    /* Search bar */
+    .search-bar { background: var(--bg-card); border-bottom: 1.5px solid var(--border); padding: 0.875rem 1.5rem; flex-shrink: 0; z-index: 999; }
+    .search-inner { max-width: 700px; margin: 0 auto; }
+    .search-label { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+    .search-row { display: flex; gap: 8px; }
+    .search-row input { flex: 1; padding: 10px 14px; font-size: 15px; font-family: 'Nunito', sans-serif; font-weight: 700; border: 2px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--ink); outline: none; transition: border-color 0.15s; text-transform: uppercase; letter-spacing: 0.05em; }
+    .search-row input::placeholder { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--muted); }
+    .search-row input:focus { border-color: var(--sage); }
+    .search-row input.error { border-color: var(--red); }
+    .search-row button { padding: 10px 20px; background: var(--sage); color: #fff; font-size: 14px; font-weight: 800; font-family: 'Nunito', sans-serif; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+    .search-row button:hover { background: var(--sage-dark); }
+    .search-row button:disabled { background: var(--muted); cursor: not-allowed; }
+    .search-hint { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 5px; }
+
+    /* Main content */
+    .main { display: flex; flex: 1; overflow: hidden; }
+
+    /* Sidebar */
+    .sidebar { width: 340px; flex-shrink: 0; background: var(--bg-card); border-right: 1.5px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 1rem 1.25rem 0.75rem; border-bottom: 1px solid var(--border); }
+    .sidebar-title { font-family: 'Lora', serif; font-size: 16px; font-weight: 700; color: var(--ink); }
+    .sidebar-sub { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+    /* Legend */
+    .legend { padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--muted); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* Builder cards */
+    .cards-list { flex: 1; padding: 0.75rem; display: flex; flex-direction: column; gap: 8px; }
+    .empty-state { padding: 2rem 1.25rem; text-align: center; }
+    .empty-icon { font-size: 32px; margin-bottom: 0.75rem; }
+    .empty-title { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 0.4rem; }
+    .empty-sub { font-size: 12px; color: var(--muted); font-weight: 600; line-height: 1.5; }
+
+    .builder-card { background: var(--bg); border-radius: var(--radius-sm); padding: 1rem; border: 1.5px solid var(--border); cursor: pointer; transition: border-color 0.15s, transform 0.15s; }
+    .builder-card:hover { border-color: var(--sage); transform: translateY(-1px); }
+    .builder-card.active { border-color: var(--sage); background: var(--sage-light); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.5rem; }
+    .card-builder { font-size: 13px; font-weight: 800; color: var(--ink); }
+    .card-dev { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 1px; }
+    .score-badge { font-size: 14px; font-weight: 900; padding: 3px 8px; border-radius: 6px; }
+    .score-high { background: #EBF4EE; color: var(--sage-dark); }
+    .score-mid  { background: #FEF3D7; color: #B87208; }
+    .score-low  { background: var(--red-light); color: var(--red-dark); }
+    .card-meta { font-size: 11px; color: var(--muted); font-weight: 600; margin-bottom: 0.5rem; }
+    .rating-row { display: flex; gap: 3px; align-items: center; }
+    .rdot { width: 8px; height: 8px; border-radius: 50%; }
+    .card-dist { font-size: 11px; color: var(--sage); font-weight: 700; margin-top: 0.4rem; }
+
+    /* Map */
+    #map { flex: 1; z-index: 1; }
+
+    /* Custom popup */
+    .leaflet-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 4px 24px rgba(30,45,36,0.15) !important; border: 1.5px solid var(--border); padding: 0 !important; overflow: hidden; }
+    .leaflet-popup-content { margin: 0 !important; width: 260px !important; }
+    .leaflet-popup-tip-container { display: none; }
+    .popup-inner { padding: 1rem; }
+    .popup-builder { font-size: 14px; font-weight: 800; color: var(--ink); margin-bottom: 2px; }
+    .popup-dev { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 0.6rem; }
+    .popup-score { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .popup-score-num { font-family: 'Lora', serif; font-size: 22px; font-weight: 700; }
+    .popup-score-label { font-size: 11px; color: var(--muted); font-weight: 600; text-align: right; }
+    .popup-bar-wrap { height: 6px; background: var(--border); border-radius: 3px; margin-bottom: 0.6rem; overflow: hidden; }
+    .popup-bar { height: 100%; border-radius: 3px; transition: width 0.5s; }
+    .popup-meta { font-size: 11px; color: var(--muted); font-weight: 600; line-height: 1.5; }
+    .popup-footer { background: var(--sage-light); padding: 0.6rem 1rem; font-size: 11px; font-weight: 700; color: var(--sage-dark); }
+
+    /* Prototype banner */
+    .proto-banner { background: var(--red-light); border-bottom: 1px solid #f5bfbb; padding: 6px 1.5rem; text-align: center; font-size: 11px; font-weight: 700; color: var(--red-dark); flex-shrink: 0; }
+
+    @media (max-width: 640px) {
+      .main { flex-direction: column-reverse; }
+      .sidebar { width: 100%; height: 280px; border-right: none; border-top: 1.5px solid var(--border); }
+      #map { flex: 1; min-height: 300px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="proto-banner">
+    Prototype — using representative development data. Full live data launching with WhoBuilt · <a href="https://whobuilt.org" style="color:var(--red-dark);">join the waitlist</a>
+  </div>
+
+  <header class="header">
+    <a class="logo" href="https://whobuilt.org">
+      <div class="logo-icon">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><path d="M4 15L10 5L16 15" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="16.5" r="1.5" fill="#fff"/></svg>
+      </div>
+      <div>
+        <span class="logo-name">WhoBuilt</span>
+        <span class="logo-domain">whobuilt.org</span>
+      </div>
+    </a>
+    <div class="header-tag">Builder map</div>
+  </header>
+
+  <div class="search-bar">
+    <div class="search-inner">
+      <div class="search-label">Search by postcode</div>
+      <div class="search-row">
+        <input type="text" id="postcode-input" placeholder="e.g. SW1A 1AA or M1 1AE" maxlength="8" />
+        <button id="search-btn" onclick="searchPostcode()">Search</button>
+      </div>
+      <div class="search-hint" id="search-hint">Enter a UK postcode to find new build developments and their builder ratings nearby.</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title" id="sidebar-title">Developments near you</div>
+        <div class="sidebar-sub" id="sidebar-sub">Search a postcode to get started</div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#3D7A52"></div>95%+ excellent</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E8960C"></div>90–95% good</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#E03A2F"></div>&lt;90% poor</div>
+      </div>
+      <div class="cards-list" id="cards-list">
+        <div class="empty-state">
+          <div class="empty-icon">🏠</div>
+          <div class="empty-title">Enter a postcode above</div>
+          <div class="empty-sub">We'll show you every major new build development within 10 miles, ranked by builder satisfaction score.</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+</div>
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────
+
+const BUILDER_SCORES = {
+  'Barratt Developments': { score: 94.2, trend: 'stable', hbf_star: 5 },
+  'Taylor Wimpey':        { score: 92.6, trend: 'improving', hbf_star: 5 },
+  'Persimmon Homes':      { score: 92.8, trend: 'recovering', hbf_star: 5 },
+  'Bellway Homes':        { score: 93.5, trend: 'stable', hbf_star: 5 },
+  'Bloor Homes':          { score: 96.4, trend: 'stable', hbf_star: 5 },
+  'Keepmoat':             { score: 92.1, trend: 'stable', hbf_star: 5 },
+  'Crest Nicholson':      { score: 90.9, trend: 'improving', hbf_star: 4 },
+  'Miller Homes':         { score: 92.7, trend: 'stable', hbf_star: 5 },
+  'CALA Homes':           { score: 95.0, trend: 'stable', hbf_star: 5 },
+  'Berkeley Group':       { score: 95.8, trend: 'stable', hbf_star: 5 },
+  'Vistry Group':         { score: 93.1, trend: 'improving', hbf_star: 5 },
+  'Bovis Homes':          { score: 91.4, trend: 'stable', hbf_star: 5 },
+};
+
+// Representative UK developments (seeded from public data)
+const DEVELOPMENTS = [
+  // London & SE
+  { name: 'Kidbrooke Village', builder: 'Berkeley Group', lat: 51.4635, lng: 0.0294, units: 4700, status: 'Active' },
+  { name: 'Springhead Park', builder: 'Berkeley Group', lat: 51.4418, lng: 0.2978, units: 950, status: 'Active' },
+  { name: 'White City Living', builder: 'Berkeley Group', lat: 51.5115, lng: -0.2241, units: 1800, status: 'Active' },
+  { name: 'Barking Riverside', builder: 'Bellway Homes', lat: 51.5085, lng: 0.1237, units: 1100, status: 'Active' },
+  { name: 'Millbrook Park', builder: 'Barratt Developments', lat: 51.6198, lng: -0.2032, units: 2000, status: 'Active' },
+  { name: 'The Quarry', builder: 'Barratt Developments', lat: 51.3354, lng: -0.2568, units: 580, status: 'Active' },
+  { name: 'Brooklands', builder: 'Taylor Wimpey', lat: 51.3543, lng: -0.4632, units: 2300, status: 'Active' },
+  { name: 'Ebbsfleet Green', builder: 'Taylor Wimpey', lat: 51.4420, lng: 0.3370, units: 950, status: 'Active' },
+  { name: 'Beaulieu', builder: 'Crest Nicholson', lat: 51.7254, lng: 0.4892, units: 3600, status: 'Active' },
+  { name: 'Arborfield Green', builder: 'Crest Nicholson', lat: 51.3768, lng: -0.9732, units: 3500, status: 'Active' },
+  { name: 'Otterpool Park', builder: 'Vistry Group', lat: 51.0801, lng: 1.0168, units: 800, status: 'Active' },
+
+  // Midlands
+  { name: 'Durranhill Rise', builder: 'Persimmon Homes', lat: 52.4822, lng: -1.8732, units: 420, status: 'Active' },
+  { name: 'Kingswood Heath', builder: 'Persimmon Homes', lat: 52.3812, lng: -1.5643, units: 560, status: 'Active' },
+  { name: 'Whitmore Park', builder: 'Barratt Developments', lat: 52.4431, lng: -1.4832, units: 890, status: 'Active' },
+  { name: 'Priors Hall Park', builder: 'Vistry Group', lat: 52.4765, lng: -0.5874, units: 5100, status: 'Active' },
+  { name: 'Northstowe', builder: 'Taylor Wimpey', lat: 52.2654, lng: 0.0234, units: 10000, status: 'Active' },
+  { name: 'Houlton', builder: 'Crest Nicholson', lat: 52.3998, lng: -1.2432, units: 6200, status: 'Active' },
+  { name: 'Langley Gate', builder: 'Bellway Homes', lat: 52.5432, lng: -2.0876, units: 340, status: 'Active' },
+  { name: 'Keepmoat at Selly Oak', builder: 'Keepmoat', lat: 52.4365, lng: -1.9321, units: 420, status: 'Active' },
+  { name: 'Bloor at Stretton', builder: 'Bloor Homes', lat: 52.8234, lng: -1.5432, units: 280, status: 'Active' },
+
+  // North West
+  { name: 'Lightfoot Green', builder: 'Persimmon Homes', lat: 53.8012, lng: -2.7432, units: 360, status: 'Active' },
+  { name: 'Logwood Mill', builder: 'Bellway Homes', lat: 53.7654, lng: -2.4876, units: 490, status: 'Active' },
+  { name: 'Peel Hall', builder: 'Taylor Wimpey', lat: 53.4012, lng: -2.3421, units: 1200, status: 'Active' },
+  { name: 'Middlewood Locks', builder: 'Vistry Group', lat: 53.4843, lng: -2.2654, units: 2200, status: 'Active' },
+  { name: 'Keepmoat at Bury', builder: 'Keepmoat', lat: 53.5943, lng: -2.2987, units: 310, status: 'Active' },
+  { name: 'Barratt at Altrincham', builder: 'Barratt Developments', lat: 53.3876, lng: -2.3543, units: 245, status: 'Active' },
+  { name: 'Miller at Norden', builder: 'Miller Homes', lat: 53.6234, lng: -2.1765, units: 195, status: 'Active' },
+
+  // Yorkshire
+  { name: 'Derwenthorpe', builder: 'Barratt Developments', lat: 53.9765, lng: -1.0321, units: 540, status: 'Active' },
+  { name: 'Harrogate Gateway', builder: 'Persimmon Homes', lat: 53.9921, lng: -1.5432, units: 320, status: 'Active' },
+  { name: 'Logic Leeds', builder: 'Bellway Homes', lat: 53.8012, lng: -1.5487, units: 410, status: 'Active' },
+  { name: 'Scholars Walk', builder: 'Miller Homes', lat: 53.8987, lng: -1.6543, units: 185, status: 'Active' },
+  { name: 'Taylor Wimpey at Cottingham', builder: 'Taylor Wimpey', lat: 53.7843, lng: -0.4012, units: 290, status: 'Active' },
+  { name: 'Bloor at Brough', builder: 'Bloor Homes', lat: 53.7298, lng: -0.5654, units: 240, status: 'Active' },
+
+  // East England
+  { name: 'Marleigh', builder: 'Barratt Developments', lat: 52.2287, lng: 0.1987, units: 1350, status: 'Active' },
+  { name: 'Great Kneighton', builder: 'Bellway Homes', lat: 52.1765, lng: 0.1123, units: 2000, status: 'Active' },
+  { name: 'Bovis at Peterborough', builder: 'Bovis Homes', lat: 52.5734, lng: -0.2365, units: 380, status: 'Active' },
+  { name: 'CALA at St Neots', builder: 'CALA Homes', lat: 52.2287, lng: -0.2587, units: 290, status: 'Active' },
+
+  // South West
+  { name: 'Cranbrook', builder: 'Taylor Wimpey', lat: 50.7543, lng: -3.4312, units: 6500, status: 'Active' },
+  { name: 'Sherford', builder: 'Vistry Group', lat: 50.3654, lng: -4.0543, units: 5500, status: 'Active' },
+  { name: 'Barratt at Bristol', builder: 'Barratt Developments', lat: 51.4543, lng: -2.5987, units: 480, status: 'Active' },
+  { name: 'Bloor at Taunton', builder: 'Bloor Homes', lat: 51.0198, lng: -3.1432, units: 310, status: 'Active' },
+  { name: 'Persimmon at Chippenham', builder: 'Persimmon Homes', lat: 51.4576, lng: -2.1187, units: 420, status: 'Active' },
+
+  // Scotland
+  { name: 'Blindwells', builder: 'Miller Homes', lat: 55.9432, lng: -2.9876, units: 1600, status: 'Active' },
+  { name: 'Shawfair', builder: 'Miller Homes', lat: 55.8987, lng: -3.0765, units: 4000, status: 'Active' },
+  { name: 'CALA at Gilmerton', builder: 'CALA Homes', lat: 55.9012, lng: -3.1543, units: 350, status: 'Active' },
+  { name: 'Barratt at Winchburgh', builder: 'Barratt Developments', lat: 55.9543, lng: -3.5012, units: 3450, status: 'Active' },
+  { name: 'Keepmoat at Dundee', builder: 'Keepmoat', lat: 56.4621, lng: -2.9876, units: 240, status: 'Active' },
+];
+
+// ── Map setup ─────────────────────────────────────────────────────────────
+
+const map = L.map('map', { center: [52.5, -1.5], zoom: 6, zoomControl: true });
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  maxZoom: 19
+}).addTo(map);
+
+// ── Marker helpers ────────────────────────────────────────────────────────
+
+function scoreColour(score) {
+  if (score >= 95) return '#3D7A52';
+  if (score >= 90) return '#E8960C';
+  return '#E03A2F';
+}
+
+function scoreClass(score) {
+  if (score >= 95) return 'score-high';
+  if (score >= 90) return 'score-mid';
+  return 'score-low';
+}
+
+function makeDots(score) {
+  const filled = Math.round((score - 85) / 3);
+  let dots = '';
+  for (let i = 0; i < 5; i++) {
+    const col = i < filled ? scoreColour(score) : '#D8E8DE';
+    dots += `<div class="rdot" style="width:8px;height:8px;border-radius:50%;background:${col}"></div>`;
+  }
+  return dots;
+}
+
+function createMarkerIcon(score) {
+  const col = scoreColour(score);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="40" viewBox="0 0 32 40">
+    <path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24S32 26 32 16C32 7.163 24.837 0 16 0z" fill="${col}"/>
+    <path d="M16 0C7.163 0 0 7.163 0 16c0 10 16 24 16 24S32 26 32 16C32 7.163 24.837 0 16 0z" fill="rgba(0,0,0,0.15)" transform="translate(0,1)"/>
+    <circle cx="16" cy="15" r="9" fill="white" opacity="0.95"/>
+    <text x="16" y="19" text-anchor="middle" font-size="9" font-weight="800" font-family="Nunito,sans-serif" fill="${col}">${score.toFixed(0)}%</text>
+  </svg>`;
+  return L.divIcon({
+    html: svg, className: '', iconSize: [32, 40], iconAnchor: [16, 40], popupAnchor: [0, -42]
+  });
+}
+
+// ── Markers & popups ──────────────────────────────────────────────────────
+
+let markers = [];
+let activeCard = null;
+
+function addMarkers(devs) {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+
+  devs.forEach((dev, i) => {
+    const info = BUILDER_SCORES[dev.builder] || { score: 91.0, trend: 'unknown', hbf_star: 4 };
+    const score = info.score;
+    const col = scoreColour(score);
+    const barWidth = Math.round(((score - 85) / 15) * 100);
+
+    const marker = L.marker([dev.lat, dev.lng], { icon: createMarkerIcon(score) });
+
+    const popup = `
+      <div class="popup-inner">
+        <div class="popup-builder">${dev.builder}</div>
+        <div class="popup-dev">${dev.name} · ${dev.units.toLocaleString()} homes</div>
+        <div class="popup-score">
+          <div class="popup-score-num" style="color:${col}">${score.toFixed(1)}%</div>
+          <div class="popup-score-label">Would recommend<br>their builder</div>
+        </div>
+        <div class="popup-bar-wrap"><div class="popup-bar" style="width:${barWidth}%;background:${col}"></div></div>
+        <div class="popup-meta">HBF ${info.hbf_star}-star rating · Trend: ${info.trend}<br>Source: HBF Customer Satisfaction Survey Q1 2021–Q3 2025</div>
+      </div>
+      <div class="popup-footer">Data: WhoBuilt · whobuilt.org</div>
+    `;
+
+    marker.bindPopup(popup, { maxWidth: 260, closeButton: true });
+    marker.on('click', () => highlightCard(i));
+    marker.addTo(map);
+    markers.push(marker);
+  });
+}
+
+function highlightCard(idx) {
+  document.querySelectorAll('.builder-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById(`card-${idx}`);
+  if (card) {
+    card.classList.add('active');
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+// ── Sidebar cards ─────────────────────────────────────────────────────────
+
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 3958.8;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function renderCards(devs, centre) {
+  const list = document.getElementById('cards-list');
+
+  if (!devs.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No developments found</div><div class="empty-sub">Try a different postcode or a nearby town. We're adding more developments before launch.</div></div>`;
+    return;
+  }
+
+  list.innerHTML = devs.map((dev, i) => {
+    const info = BUILDER_SCORES[dev.builder] || { score: 91.0, trend: 'stable', hbf_star: 4 };
+    const score = info.score;
+    const dist = centre ? haversine(centre.lat, centre.lng, dev.lat, dev.lng).toFixed(1) : null;
+    return `
+      <div class="builder-card" id="card-${i}" onclick="cardClick(${i})">
+        <div class="card-top">
+          <div>
+            <div class="card-builder">${dev.builder.replace(' Developments','').replace(' Group','')}</div>
+            <div class="card-dev">${dev.name}</div>
+          </div>
+          <div class="score-badge ${scoreClass(score)}">${score.toFixed(1)}%</div>
+        </div>
+        <div class="card-meta">${dev.units.toLocaleString()} homes · HBF ${info.hbf_star}★ · ${info.trend}</div>
+        <div class="rating-row">${makeDots(score)}</div>
+        ${dist ? `<div class="card-dist">${dist} miles away</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function cardClick(idx) {
+  highlightCard(idx);
+  const marker = markers[idx];
+  if (marker) { map.setView(marker.getLatLng(), 14, { animate: true }); marker.openPopup(); }
+}
+
+// ── Search ────────────────────────────────────────────────────────────────
+
+async function searchPostcode() {
+  const raw = document.getElementById('postcode-input').value.trim().toUpperCase().replace(/\s+/g, '');
+  const btn = document.getElementById('search-btn');
+  const hint = document.getElementById('search-hint');
+  const input = document.getElementById('postcode-input');
+
+  if (!raw) { input.classList.add('error'); return; }
+  input.classList.remove('error');
+
+  btn.textContent = 'Searching…'; btn.disabled = true;
+  hint.textContent = 'Looking up postcode…';
+
+  try {
+    const res = await fetch(`https://api.postcodes.io/postcodes/${raw}`);
+    const data = await res.json();
+
+    if (data.status !== 200) {
+      hint.textContent = 'Postcode not found — please check and try again.';
+      input.classList.add('error');
+      btn.textContent = 'Search'; btn.disabled = false;
+      return;
+    }
+
+    const { latitude: lat, longitude: lng, admin_district, region } = data.result;
+    const centre = { lat, lng };
+
+    // Filter to within 25 miles
+    const nearby = DEVELOPMENTS
+      .map(d => ({ ...d, dist: haversine(lat, lng, d.lat, d.lng) }))
+      .filter(d => d.dist <= 25)
+      .sort((a, b) => a.dist - b.dist);
+
+    // Update map
+    map.setView([lat, lng], nearby.length ? 11 : 9, { animate: true });
+
+    // Add a location pin
+    if (window._locationMarker) map.removeLayer(window._locationMarker);
+    window._locationMarker = L.circleMarker([lat, lng], {
+      radius: 8, color: '#3D7A52', fillColor: '#3D7A52', fillOpacity: 0.9, weight: 2
+    }).addTo(map).bindPopup(`<b style="font-family:Nunito">📍 ${admin_district || raw}</b>`).openPopup();
+
+    addMarkers(nearby);
+    renderCards(nearby, centre);
+
+    document.getElementById('sidebar-title').textContent = `Near ${admin_district || raw}`;
+    document.getElementById('sidebar-sub').textContent = `${nearby.length} development${nearby.length !== 1 ? 's' : ''} found within 25 miles`;
+
+    hint.textContent = `Found ${nearby.length} development${nearby.length !== 1 ? 's' : ''} near ${admin_district || raw}, ${region || ''}. Click a pin or card for details.`;
+
+  } catch(e) {
+    hint.textContent = 'Something went wrong — please try again.';
+  }
+
+  btn.textContent = 'Search'; btn.disabled = false;
+}
+
+// Allow Enter key
+document.getElementById('postcode-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchPostcode();
+});
+
+// Seed all markers on load at low zoom
+addMarkers(DEVELOPMENTS);
+</script>
+</body>
+</html>
