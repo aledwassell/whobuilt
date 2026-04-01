@@ -1,106 +1,329 @@
+/* ── Tailwind v4 ─────────────────────────────────────────────────────── */
 @import 'tailwindcss';
+
+/* ── Plugins ─────────────────────────────────────────────────────────── */
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
-@import '@fontsource/fira-mono';
 
-:root {
-	--font-body: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-		'Open Sans', 'Helvetica Neue', sans-serif;
-	--font-mono: 'Fira Mono', monospace;
-	--color-bg-0: rgb(202, 216, 228);
-	--color-bg-1: hsl(209, 36%, 86%);
-	--color-bg-2: hsl(224, 44%, 95%);
-	--color-theme-1: #ff3e00;
-	--color-theme-2: #4075a6;
-	--color-text: rgba(0, 0, 0, 0.7);
-	--column-width: 42rem;
-	--column-margin-top: 4rem;
-	font-family: var(--font-body);
-	color: var(--color-text);
+/* ── Design tokens ───────────────────────────────────────────────────── */
+/*
+  @theme registers brand values as Tailwind utilities AND CSS custom
+  properties simultaneously. You get both bg-sage AND var(--color-sage).
+*/
+@theme {
+	/* Sage green */
+	--color-sage: #3d7a52;
+	--color-sage-dark: #2a5a3a;
+	--color-sage-light: #ebf4ee;
+	--color-sage-mid: #c4dfd0;
+
+	/* Red accent */
+	--color-red: #e03a2f;
+	--color-red-dark: #b02820;
+	--color-red-light: #fdeeed;
+
+	/* Neutrals */
+	--color-ink: #1e2d24;
+	--color-muted: #6b7a6f;
+	--color-border: #d8e8de;
+	--color-bg: #f5faf6;
+	--color-bg-card: #ffffff;
+
+	/* Typography */
+	--font-sans: 'Nunito', sans-serif;
+	--font-serif: 'Lora', serif;
+
+	/* Border radius */
+	--radius-sm: 10px;
+	--radius: 16px;
+	--radius-2xl: 16px;
+	--radius-3xl: 24px;
 }
 
-body {
-	min-height: 100vh;
-	margin: 0;
-	background-attachment: fixed;
-	background-color: var(--color-bg-1);
-	background-size: 100vw 100vh;
-	background-image: radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0) 100%),
-		linear-gradient(180deg, var(--color-bg-0) 0%, var(--color-bg-1) 15%, var(--color-bg-2) 50%);
-}
+/* ── Base resets ─────────────────────────────────────────────────────── */
+@layer base {
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
 
-h1,
-h2,
-p {
-	font-weight: 400;
-}
+	html {
+		scroll-behavior: smooth;
+	}
 
-p {
-	line-height: 1.5;
-}
-
-a {
-	color: var(--color-theme-1);
-	text-decoration: none;
-}
-
-a:hover {
-	text-decoration: underline;
-}
-
-h1 {
-	font-size: 2rem;
-	text-align: center;
-}
-
-h2 {
-	font-size: 1rem;
-}
-
-pre {
-	font-size: 16px;
-	font-family: var(--font-mono);
-	background-color: rgba(255, 255, 255, 0.45);
-	border-radius: 3px;
-	box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
-	padding: 0.5em;
-	overflow-x: auto;
-	color: var(--color-text);
-}
-
-.text-column {
-	display: flex;
-	max-width: 48rem;
-	flex: 0.6;
-	flex-direction: column;
-	justify-content: center;
-	margin: 0 auto;
-}
-
-input,
-button {
-	font-size: inherit;
-	font-family: inherit;
-}
-
-button:focus:not(:focus-visible) {
-	outline: none;
-}
-
-@media (min-width: 720px) {
-	h1 {
-		font-size: 2.4rem;
+	body {
+		font-family: var(--font-sans);
+		background: var(--color-bg);
+		color: var(--color-ink);
+		-webkit-font-smoothing: antialiased;
 	}
 }
 
-.visually-hidden {
-	border: 0;
-	clip: rect(0 0 0 0);
-	height: auto;
-	margin: 0;
-	overflow: hidden;
-	padding: 0;
-	position: absolute;
-	width: 1px;
-	white-space: nowrap;
+/* ── Reusable component classes ──────────────────────────────────────── */
+@layer components {
+	.page {
+		max-width: 900px;
+		margin: 0 auto;
+		padding: 0 1.5rem 5rem;
+	}
+
+	.pill {
+		font-size: 12px;
+		font-weight: 700;
+		background: var(--color-red-light);
+		color: var(--color-red-dark);
+		padding: 6px 14px;
+		border-radius: 100px;
+	}
+
+	.pill-sage {
+		font-size: 12px;
+		font-weight: 700;
+		background: var(--color-sage-light);
+		color: var(--color-sage-dark);
+		padding: 6px 14px;
+		border-radius: 100px;
+	}
+
+	.section-tag {
+		font-size: 11px;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		background: var(--color-red-light);
+		color: var(--color-red-dark);
+		padding: 4px 10px;
+		border-radius: 100px;
+	}
+
+	.section-title {
+		font-family: var(--font-serif);
+		font-size: 26px;
+		font-weight: 700;
+		color: var(--color-ink);
+		margin-bottom: 1.25rem;
+	}
+
+	.card {
+		background: var(--color-bg-card);
+		border: 1.5px solid var(--color-border);
+		border-radius: var(--radius);
+		padding: 1.25rem 1.5rem;
+	}
+
+	.stat-card {
+		background: var(--color-bg-card);
+		border: 1.5px solid var(--color-border);
+		border-radius: var(--radius);
+		padding: 1.25rem 1.5rem;
+	}
+
+	.stat-num {
+		font-family: var(--font-serif);
+		font-size: 28px;
+		font-weight: 700;
+		color: var(--color-ink);
+		line-height: 1;
+		margin-bottom: 4px;
+	}
+
+	.stat-num.accent {
+		color: var(--color-red-dark);
+	}
+
+	.stat-label {
+		font-size: 12px;
+		font-weight: 700;
+		color: var(--color-muted);
+		line-height: 1.4;
+	}
+
+	.feature {
+		background: var(--color-bg-card);
+		border: 1.5px solid var(--color-border);
+		border-radius: var(--radius);
+		padding: 1.5rem;
+		transition:
+			border-color 0.2s,
+			transform 0.2s;
+	}
+
+	.feature:hover {
+		border-color: var(--color-sage);
+		transform: translateY(-2px);
+	}
+
+	.feature-icon-wrap {
+		width: 44px;
+		height: 44px;
+		background: var(--color-sage-light);
+		border-radius: 12px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin-bottom: 1rem;
+	}
+
+	.builder-card {
+		background: var(--color-bg-card);
+		border: 1.5px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		padding: 1rem 1.1rem;
+	}
+
+	.builder-name {
+		font-size: 13px;
+		font-weight: 800;
+		color: var(--color-ink);
+		margin-bottom: 3px;
+	}
+
+	.builder-meta {
+		font-size: 11px;
+		font-weight: 600;
+		color: var(--color-muted);
+		margin-bottom: 8px;
+	}
+
+	.dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--color-border);
+	}
+
+	.dot.filled {
+		background: var(--color-sage);
+	}
+
+	.form-wrap {
+		background: #fff;
+		border-radius: var(--radius);
+		padding: 1.25rem;
+		display: flex;
+		gap: 10px;
+		flex-wrap: wrap;
+		max-width: 520px;
+		box-shadow: 0 2px 16px rgba(30, 45, 36, 0.08);
+	}
+
+	.form-wrap input[type='email'] {
+		flex: 1 1 160px;
+		padding: 11px 14px;
+		font-size: 15px;
+		font-family: var(--font-sans);
+		font-weight: 600;
+		border: 2px solid var(--color-border);
+		border-radius: var(--radius-sm);
+		background: var(--color-bg);
+		color: var(--color-ink);
+		outline: none;
+		transition: border-color 0.15s;
+	}
+
+	.form-wrap input[type='email']:focus {
+		border-color: var(--color-sage);
+	}
+
+	.form-wrap input[type='email'].error {
+		border-color: var(--color-red);
+	}
+
+	.form-wrap button {
+		padding: 11px 22px;
+		background: var(--color-sage);
+		color: #fff;
+		font-size: 14px;
+		font-weight: 800;
+		font-family: var(--font-sans);
+		border: none;
+		border-radius: var(--radius-sm);
+		cursor: pointer;
+		white-space: nowrap;
+		transition:
+			background 0.15s,
+			transform 0.1s;
+	}
+
+	.form-wrap button:hover {
+		background: var(--color-sage-dark);
+	}
+
+	.form-wrap button:active {
+		transform: scale(0.97);
+	}
+
+	.form-wrap button:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+	}
+
+	.manifesto {
+		background: var(--color-ink);
+		border-radius: var(--radius-3xl);
+		padding: 2.5rem;
+		margin: 2rem 0;
+	}
+
+	.manifesto blockquote {
+		font-family: var(--font-serif);
+		font-size: clamp(18px, 2.5vw, 24px);
+		font-weight: 600;
+		font-style: italic;
+		line-height: 1.45;
+		color: var(--color-sage-light);
+	}
+
+	.manifesto cite {
+		display: block;
+		margin-top: 1rem;
+		font-size: 13px;
+		font-style: normal;
+		font-weight: 700;
+		font-family: var(--font-sans);
+		color: var(--color-red);
+	}
+
+	.cta-block {
+		background: var(--color-red-light);
+		border-radius: var(--radius-3xl);
+		padding: 2.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.cta-block .section-title {
+		color: var(--color-red-dark);
+	}
+
+	.cta-sub {
+		font-size: 15px;
+		font-weight: 600;
+		color: #7a3030;
+		margin-bottom: 1.5rem;
+	}
+
+	.footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding-top: 1.5rem;
+		border-top: 1.5px solid var(--color-border);
+	}
+
+	.footer-logo {
+		font-size: 15px;
+		font-weight: 900;
+		color: var(--color-ink);
+	}
+
+	.footer-copy {
+		font-size: 12px;
+		font-weight: 600;
+		color: var(--color-muted);
+	}
 }
