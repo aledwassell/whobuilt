@@ -109,31 +109,7 @@
 </svelte:head>
 
 <!-- ── Markup ─────────────────────────────────────────────────────────── -->
-<div class="page">
-	<!-- Header -->
-	<header class="flex items-center justify-between py-6">
-		<a href="/" class="flex items-center gap-2 no-underline">
-			<div class="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[var(--color-sage)]">
-				<svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-					<path
-						d="M4 15L10 5L16 15"
-						stroke="#fff"
-						stroke-width="2.5"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					/>
-					<circle cx="10" cy="16.5" r="1.5" fill="#fff" />
-				</svg>
-			</div>
-			<div class="flex flex-col leading-none">
-				<span class="text-xl font-black text-[var(--color-ink)]">WhoBuilt</span>
-				<span class="text-[10px] font-semibold tracking-[0.04em] text-[var(--color-muted)]"
-					>whobuilt.org</span
-				>
-			</div>
-		</a>
-		<span class="pill">Coming soon</span>
-	</header>
+<div class="page" id="waitlist">
 
 	<!-- Hero -->
 	<section

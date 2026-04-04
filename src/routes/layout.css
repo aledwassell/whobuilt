@@ -1,6 +1,11 @@
 /* ── Tailwind v4 ─────────────────────────────────────────────────────── */
 @import 'tailwindcss';
 
+/* ── Global layout vars ──────────────────────────────────────────────── */
+:root {
+	--nav-height: 64px;
+}
+
 /* ── Plugins ─────────────────────────────────────────────────────────── */
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
@@ -325,5 +330,118 @@
 		font-size: 12px;
 		font-weight: 600;
 		color: var(--color-muted);
+	}
+
+	/* ── Shared site nav ─────────────────────────────────────────────── */
+	.site-nav {
+		background: var(--color-bg-card);
+		border-bottom: 1.5px solid var(--color-border);
+		height: var(--nav-height);
+		position: sticky;
+		top: 0;
+		z-index: 1000;
+	}
+
+	.site-nav-inner {
+		max-width: 960px;
+		margin: 0 auto;
+		padding: 0 1.5rem;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.site-nav-links {
+		display: flex;
+		align-items: center;
+		gap: 2px;
+		flex: 1;
+		justify-content: center;
+	}
+
+	.site-nav-link {
+		font-size: 13px;
+		font-weight: 700;
+		color: var(--color-muted);
+		padding: 5px 10px;
+		border-radius: 8px;
+		text-decoration: none;
+		transition:
+			color 0.15s,
+			background 0.15s;
+		white-space: nowrap;
+	}
+
+	.site-nav-link:hover {
+		color: var(--color-sage);
+		background: var(--color-sage-light);
+	}
+
+	.site-nav-link.active {
+		color: var(--color-sage-dark);
+		background: var(--color-sage-light);
+	}
+
+	.site-nav-cta {
+		font-size: 13px;
+		font-weight: 800;
+		padding: 7px 16px;
+		background: var(--color-sage);
+		color: #fff;
+		border-radius: 100px;
+		text-decoration: none;
+		white-space: nowrap;
+		transition: background 0.15s;
+		flex-shrink: 0;
+	}
+
+	.site-nav-cta:hover {
+		background: var(--color-sage-dark);
+	}
+
+	@media (max-width: 600px) {
+		.site-nav-links {
+			display: none;
+		}
+	}
+
+	/* ── Score badge (shared across pages) ──────────────────────────── */
+	.score-badge {
+		font-size: 14px;
+		font-weight: 900;
+		padding: 3px 8px;
+		border-radius: 6px;
+	}
+
+	.score-high {
+		background: #ebf4ee;
+		color: var(--color-sage-dark);
+	}
+
+	.score-mid {
+		background: #fef3d7;
+		color: #b87208;
+	}
+
+	.score-low {
+		background: var(--color-red-light);
+		color: var(--color-red-dark);
+	}
+
+	/* ── Page with inner nav (for full-width pages) ───────────────────── */
+	.inner-page-header {
+		background: var(--color-bg-card);
+		border-bottom: 1px solid var(--color-border);
+		padding: 0.875rem 1.5rem;
+	}
+
+	.inner-page-header-inner {
+		max-width: 960px;
+		margin: 0 auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 }
