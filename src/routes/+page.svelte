@@ -110,7 +110,6 @@
 
 <!-- ── Markup ─────────────────────────────────────────────────────────── -->
 <div class="page" id="waitlist">
-
 	<!-- Hero -->
 	<section
 		class="relative mb-6 overflow-hidden rounded-3xl px-10 py-12"
@@ -136,7 +135,7 @@
 					<circle cx="6" cy="6" r="5" stroke="#fff" stroke-width="1.5" />
 					<path d="M6 4v3M6 8.5v.5" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
 				</svg>
-				Independent · UK new builds
+				Independent · UK new builds ###
 			</div>
 
 			<h1
