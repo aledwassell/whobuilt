@@ -15,6 +15,8 @@ const handleParaglide: Handle = ({ event, resolve }) => paraglideMiddleware(even
 });
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
+	if (building) return resolve(event);
+
 	const session = await auth.api.getSession({ headers: event.request.headers });
 
 	if (session) {
