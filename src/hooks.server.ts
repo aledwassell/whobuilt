@@ -1,7 +1,5 @@
 import { sequence } from '@sveltejs/kit/hooks';
 import { building } from '$app/environment';
-import { auth } from '$lib/server/auth';
-import { svelteKitHandler } from 'better-auth/svelte-kit';
 import type { Handle } from '@sveltejs/kit';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
@@ -16,6 +14,9 @@ const handleParaglide: Handle = ({ event, resolve }) => paraglideMiddleware(even
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	if (building) return resolve(event);
+
+	const { auth } = await import('$lib/server/auth');
+	const { svelteKitHandler } = await import('better-auth/svelte-kit');
 
 	const session = await auth.api.getSession({ headers: event.request.headers });
 
