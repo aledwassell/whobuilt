@@ -25,12 +25,29 @@
 
 	const RAW_BUILDERS: Record<string, (number | null)[]> = {
 		'Barratt Developments': [
-			0.94, 0.945, 0.942, 0.94, 0.94, 0.954, 0.952, 0.953, 0.937, 0.935, 0.936, 0.949, 0.951,
-			0.952, 0.975, 0.96, 0.976, 0.964, 0.97
+			0.94, 0.945, 0.942, 0.94, 0.94, 0.954, 0.952, 0.953, 0.937, 0.935, 0.936, 0.949, 0.951, 0.952,
+			0.975, 0.96, 0.976, 0.964, 0.97
 		],
 		'Taylor Wimpey': [
-			null, null, null, null, 0.908, 0.91, 0.913, 0.906, 0.924, 0.906, 0.909, 0.911, 0.914, 0.909,
-			0.914, 0.909, 0.959, 0.957, 0.957
+			null,
+			null,
+			null,
+			null,
+			0.908,
+			0.91,
+			0.913,
+			0.906,
+			0.924,
+			0.906,
+			0.909,
+			0.911,
+			0.914,
+			0.909,
+			0.914,
+			0.909,
+			0.959,
+			0.957,
+			0.957
 		],
 		'Persimmon Homes': [
 			0.908, 0.937, 0.916, 0.92, 0.913, 0.943, 0.814, 0.913, 0.904, 0.905, 0.918, 0.911, 0.94,
@@ -45,12 +62,29 @@
 			0.96, 0.951, 0.958, 0.96, 0.96, 0.963
 		],
 		'Redrow Homes': [
-			0.928, 0.976, 0.928, 0.924, 0.928, 0.933, 0.916, 0.969, 0.969, 0.976, 0.921, 0.935, null,
-			null, null, null, null, null, null
+			0.928,
+			0.976,
+			0.928,
+			0.924,
+			0.928,
+			0.933,
+			0.916,
+			0.969,
+			0.969,
+			0.976,
+			0.921,
+			0.935,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null,
+			null
 		],
 		Keepmoat: [
-			0.928, 0.928, 0.928, 0.91, 0.928, 0.843, 0.906, 0.908, 0.906, 0.945, 0.9, 0.902, 0.943,
-			0.954, 0.943, 0.944, 0.963, 0.967, 0.947
+			0.928, 0.928, 0.928, 0.91, 0.928, 0.843, 0.906, 0.908, 0.906, 0.945, 0.9, 0.902, 0.943, 0.954,
+			0.943, 0.944, 0.963, 0.967, 0.947
 		],
 		'Crest Nicholson': [
 			0.93, 0.925, 0.913, 0.89, 0.925, 0.899, 0.882, 0.939, 0.873, 0.865, 0.899, 0.903, 0.968,
@@ -61,8 +95,8 @@
 			0.931, 0.931, 0.931, 0.962, 0.96, 0.952
 		],
 		'CALA Homes': [
-			0.95, 0.948, 0.945, 0.95, 0.95, 0.954, 0.936, 0.954, 0.932, 0.944, 0.95, 0.974, 0.978,
-			0.954, 0.959, 0.961, 0.978, 0.964, 0.964
+			0.95, 0.948, 0.945, 0.95, 0.95, 0.954, 0.936, 0.954, 0.932, 0.944, 0.95, 0.974, 0.978, 0.954,
+			0.959, 0.961, 0.978, 0.964, 0.964
 		]
 	};
 
@@ -298,12 +332,12 @@
 			19 quarters · 10 major builders
 		</div>
 		<h1
-			class="mb-2 font-serif text-[clamp(22px,4vw,36px)] font-bold leading-[1.2]"
+			class="mb-2 font-serif text-[clamp(22px,4vw,36px)] leading-[1.2] font-bold"
 			style="color: var(--color-ink);"
 		>
 			Which builder do buyers actually <em style="color: var(--color-red-dark);">recommend</em>?
 		</h1>
-		<p class="max-w-[620px] text-sm font-semibold leading-relaxed" style="color: #3a5040;">
+		<p class="max-w-[620px] text-sm leading-relaxed font-semibold" style="color: #3a5040;">
 			HBF "Would you recommend your builder?" survey results for major UK housebuilders, Q1 2021 to
 			Q3 2025. The gap between best and worst is bigger than the industry wants you to know.
 		</p>
@@ -347,12 +381,17 @@
 		</div>
 
 		<div class="mb-4 flex flex-wrap gap-1.5">
-			{#each [['trend', 'Trend over time'], ['ranking', 'Overall ranking'], ['latest', 'Latest quarter']] as [view, label]}
+			{#each [['trend', 'Trend over time'], ['ranking', 'Overall ranking'], ['latest', 'Latest quarter']] as [view, label] (label)}
 				<button
 					class="tab"
 					class:active={activeView === view}
 					onclick={() => showChart(view)}
-					style="padding:6px 14px;font-size:12px;font-weight:700;border-radius:100px;border:1.5px solid var(--color-border);background:{activeView === view ? 'var(--color-sage)' : 'var(--color-bg)'};color:{activeView === view ? '#fff' : 'var(--color-muted)'};cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;"
+					style="padding:6px 14px;font-size:12px;font-weight:700;border-radius:100px;border:1.5px solid var(--color-border);background:{activeView ===
+					view
+						? 'var(--color-sage)'
+						: 'var(--color-bg)'};color:{activeView === view
+						? '#fff'
+						: 'var(--color-muted)'};cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;"
 				>
 					{label}
 				</button>
@@ -372,23 +411,21 @@
 	<!-- Insight cards -->
 	<div class="section-title">What the data tells us</div>
 	<div class="mb-6 grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
-		{#each [
-			{ label: 'Consistently best', title: 'Bloor Homes & CALA Homes', body: 'Both maintain scores above 95% across nearly every quarter — far above the major-builder average.' },
-			{ label: 'Most improved', title: 'Crest Nicholson', body: 'Dropped sharply to 86.5% in Q3 2022, then recovered strongly to above 97% by 2024 — the biggest turnaround in the dataset.' },
-			{ label: 'Notable dip', title: 'Persimmon Homes — Q3 2022', body: 'Fell to 81.4% in Q3 2022, the lowest single-quarter score of any major builder. Recovered to ~95% by 2025.' },
-			{ label: 'The industry problem', title: 'Surveys taken 8 weeks after completion', body: "The HBF survey is sent before most defects appear. NHBC's own 9-month survey scores run 5–10% lower — the \"honeymoon effect.\"" }
-		] as insight}
+		{#each [{ label: 'Consistently best', title: 'Bloor Homes & CALA Homes', body: 'Both maintain scores above 95% across nearly every quarter — far above the major-builder average.' }, { label: 'Most improved', title: 'Crest Nicholson', body: 'Dropped sharply to 86.5% in Q3 2022, then recovered strongly to above 97% by 2024 — the biggest turnaround in the dataset.' }, { label: 'Notable dip', title: 'Persimmon Homes — Q3 2022', body: 'Fell to 81.4% in Q3 2022, the lowest single-quarter score of any major builder. Recovered to ~95% by 2025.' }, { label: 'The industry problem', title: 'Surveys taken 8 weeks after completion', body: 'The HBF survey is sent before most defects appear. NHBC\'s own 9-month survey scores run 5–10% lower — the "honeymoon effect."' }] as insight (insight)}
 			<div class="card" style="border-radius: var(--radius-sm);">
 				<div
-					class="mb-1.5 text-[10px] font-extrabold uppercase tracking-[0.08em]"
+					class="mb-1.5 text-[10px] font-extrabold tracking-[0.08em] uppercase"
 					style="color: var(--color-sage);"
 				>
 					{insight.label}
 				</div>
-				<div class="text-[13px] font-bold leading-snug" style="color: var(--color-ink);">
+				<div class="text-[13px] leading-snug font-bold" style="color: var(--color-ink);">
 					{insight.title}
 				</div>
-				<div class="mt-0.5 text-[12px] font-semibold leading-relaxed" style="color: var(--color-muted);">
+				<div
+					class="mt-0.5 text-[12px] leading-relaxed font-semibold"
+					style="color: var(--color-muted);"
+				>
 					{insight.body}
 				</div>
 			</div>
@@ -400,7 +437,7 @@
 		<div class="section-title">Want the full picture before you buy?</div>
 		<p class="cta-sub">
 			WhoBuilt is building the UK's first independent housebuilder comparison service. Join the
-			waitlist for free access at launch.
+			waitlist to get access at launch.
 		</p>
 		{#if !success}
 			<div class="form-wrap">

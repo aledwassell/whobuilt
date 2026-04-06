@@ -178,7 +178,7 @@
 							stroke-linejoin="round"
 						/>
 					</svg>
-					No spam. Free access to our launch reports for early members.
+					No spam. We'll let you know when we launch.
 				</p>
 			{:else}
 				<p class="pt-2.5 text-[15px] font-extrabold" style="color: var(--color-sage);">
@@ -215,7 +215,7 @@
 	<div class="section-title">Everything buyers wish they'd known before signing.</div>
 
 	<div class="mb-6 grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
-		{#each features as f}
+		{#each features as f (f)}
 			<div class="feature">
 				<div class="feature-icon-wrap">
 					<svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -244,12 +244,12 @@
 		class="mb-3 grid gap-2.5"
 		style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));"
 	>
-		{#each builders as b}
+		{#each builders as b (b)}
 			<div class="builder-card">
 				<div class="builder-name">{b.name}</div>
 				<div class="builder-meta">{b.meta}</div>
 				<div class="flex gap-1">
-					{#each Array(5) as _, i}
+					{#each Array(5) as _, i (i)}
 						<div class="dot" class:filled={i < b.dots}></div>
 					{/each}
 				</div>
@@ -273,7 +273,7 @@
 	<!-- Bottom CTA -->
 	<div class="cta-block">
 		<div class="section-title">Be first to know.</div>
-		<p class="cta-sub">Early members get free access to every report we publish at launch.</p>
+		<p class="cta-sub">Early members get access to every report we publish at launch.</p>
 
 		{#if !success2}
 			<div class="form-wrap">

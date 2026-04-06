@@ -18,13 +18,21 @@
 	};
 
 	// Quarterly data as percentages (null-safe)
-	const pctScores = $derived(builder.quarterlyScores.map((v) => (v !== null ? Math.round(v * 1000) / 10 : null)));
+	const pctScores = $derived(
+		builder.quarterlyScores.map((v) => (v !== null ? Math.round(v * 1000) / 10 : null))
+	);
 
 	// Min/max for context
 	const nonNull = $derived(pctScores.filter((v): v is number => v !== null));
 	const minScore = $derived(Math.min(...nonNull));
 	const maxScore = $derived(Math.max(...nonNull));
 	const latestScore = $derived([...pctScores].reverse().find((v) => v !== null) ?? null);
+
+	const canonicalUrl = $derived(`https://whobuilt.org/builders/${builder.slug}`);
+	const metaTitle = $derived(`${builder.name} — HBF Satisfaction Scores · WhoBuilt`);
+	const metaDescription = $derived(
+		`${builder.description} Average HBF score: ${builder.avgScore.toFixed(1)}% (Q1 2021–Q3 2025).`
+	);
 
 	let canvas: HTMLCanvasElement;
 	let chart: any = null;
@@ -33,7 +41,8 @@
 		const { Chart } = await import('chart.js/auto');
 		const ctx = canvas.getContext('2d')!;
 
-		const colour = builder.avgScore >= 95 ? '#3D7A52' : builder.avgScore >= 90 ? '#E8960C' : '#E03A2F';
+		const colour =
+			builder.avgScore >= 95 ? '#3D7A52' : builder.avgScore >= 90 ? '#E8960C' : '#E03A2F';
 
 		chart = new Chart(ctx, {
 			type: 'line',
@@ -61,8 +70,7 @@
 					legend: { display: false },
 					tooltip: {
 						callbacks: {
-							label: (c) =>
-								` ${c.parsed.y !== null ? c.parsed.y.toFixed(1) + '%' : 'No data'}`
+							label: (c) => ` ${c.parsed.y !== null ? c.parsed.y.toFixed(1) + '%' : 'No data'}`
 						}
 					}
 				},
@@ -86,16 +94,29 @@
 </script>
 
 <svelte:head>
-	<title>{builder.name} — HBF Satisfaction Data · WhoBuilt</title>
-	<meta
-		name="description"
-		content="{builder.name} customer satisfaction scores from the HBF survey, Q1 2021 to Q3 2025. Average score: {builder.avgScore}%."
-	/>
+	<title>{metaTitle}</title>
+	<meta name="description" content={metaDescription} />
+	<link rel="canonical" href={canonicalUrl} />
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="WhoBuilt" />
+	<meta property="og:url" content={canonicalUrl} />
+	<meta property="og:title" content={metaTitle} />
+	<meta property="og:description" content={metaDescription} />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary" />
+	<meta name="twitter:title" content={metaTitle} />
+	<meta name="twitter:description" content={metaDescription} />
 </svelte:head>
 
 <!-- Breadcrumb -->
 <div class="page" style="padding-bottom: 0; padding-top: 1rem;">
-	<div class="mb-4 flex items-center gap-1.5 text-[12px] font-semibold" style="color: var(--color-muted);">
+	<div
+		class="mb-4 flex items-center gap-1.5 text-[12px] font-semibold"
+		style="color: var(--color-muted);"
+	>
 		<a href="/builders" style="color: var(--color-sage); text-decoration: none;">Builders</a>
 		<span>›</span>
 		<span>{builder.name}</span>
@@ -108,7 +129,7 @@
 		<div class="flex flex-wrap items-start justify-between gap-4">
 			<div>
 				<h1
-					class="mb-2 font-serif text-[clamp(24px,4vw,40px)] font-bold leading-[1.2]"
+					class="mb-2 font-serif text-[clamp(24px,4vw,40px)] leading-[1.2] font-bold"
 					style="color: var(--color-ink);"
 				>
 					{builder.name}
@@ -133,14 +154,16 @@
 								/>
 							</svg>
 						{/each}
-						<span class="ml-1 text-[11px] font-semibold" style="color: var(--color-muted);">HBF</span>
+						<span class="ml-1 text-[11px] font-semibold" style="color: var(--color-muted);"
+							>HBF</span
+						>
 					</div>
 				</div>
 			</div>
 			<!-- Score -->
 			<div class="text-right">
 				<div
-					class="font-serif text-[clamp(36px,6vw,56px)] font-bold leading-none"
+					class="font-serif text-[clamp(36px,6vw,56px)] leading-none font-bold"
 					style="color: var(--color-sage-dark);"
 				>
 					{builder.avgScore.toFixed(1)}%
@@ -148,7 +171,7 @@
 				<div class="text-[12px] font-semibold" style="color: var(--color-muted);">avg score</div>
 			</div>
 		</div>
-		<p class="mt-4 max-w-[640px] text-sm font-semibold leading-relaxed" style="color: #3a5040;">
+		<p class="mt-4 max-w-[640px] text-sm leading-relaxed font-semibold" style="color: #3a5040;">
 			{builder.description}
 		</p>
 	</div>
@@ -226,10 +249,7 @@
 														: '#E03A2F'};width:{((pctScores[i]! - 75) / 25) * 100}%"
 											></div>
 										</div>
-										<span
-											class="score-badge {scoreClass(pctScores[i]!)}"
-											style="font-size:12px;"
-										>
+										<span class="score-badge {scoreClass(pctScores[i]!)}" style="font-size:12px;">
 											{pctScores[i]!.toFixed(1)}%
 										</span>
 									</div>
