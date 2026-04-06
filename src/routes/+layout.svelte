@@ -12,6 +12,12 @@
 		// { href: '/methodology', label: 'Methodology' },
 		// { href: '/about', label: 'About' }
 	];
+
+	let menuOpen = $state(false);
+
+	function closeMenu() {
+		menuOpen = false;
+	}
 </script>
 
 <svelte:head>
@@ -37,7 +43,7 @@
 
 <nav class="site-nav">
 	<div class="site-nav-inner">
-		<a href="/" class="flex flex-shrink-0 items-center gap-2 no-underline">
+		<a href="/" class="flex flex-shrink-0 items-center gap-2 no-underline" onclick={closeMenu}>
 			<div class="flex h-8 w-8 items-center justify-center rounded-[9px] bg-[var(--color-sage)]">
 				<svg width="18" height="18" viewBox="0 0 20 20" fill="none">
 					<path
@@ -54,7 +60,7 @@
 		</a>
 
 		<div class="site-nav-links">
-			{#each navLinks as link}
+			{#each navLinks as link (link.href)}
 				<a
 					href={link.href}
 					class="site-nav-link"
@@ -66,7 +72,44 @@
 		</div>
 
 		<a href="/#waitlist" class="site-nav-cta">Join waitlist</a>
+
+		<!-- Hamburger (mobile only) -->
+		<button
+			class="mobile-menu-btn"
+			onclick={() => (menuOpen = !menuOpen)}
+			aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+			aria-expanded={menuOpen}
+		>
+			{#if menuOpen}
+				<!-- X icon -->
+				<svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+					<path d="M5 5l12 12M17 5L5 17" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+				</svg>
+			{:else}
+				<!-- Hamburger icon -->
+				<svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+					<path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+				</svg>
+			{/if}
+		</button>
 	</div>
+
+	<!-- Mobile dropdown -->
+	{#if menuOpen}
+		<div class="mobile-menu">
+			{#each navLinks as link (link.href)}
+				<a
+					href={link.href}
+					class="mobile-menu-link"
+					class:active={page.url.pathname.startsWith(link.href)}
+					onclick={closeMenu}
+				>
+					{link.label}
+				</a>
+			{/each}
+			<a href="/#waitlist" class="mobile-menu-cta" onclick={closeMenu}>Join waitlist</a>
+		</div>
+	{/if}
 </nav>
 
 {@render children()}
